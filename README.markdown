@@ -3,13 +3,17 @@
 ## Project Overview
 LangBridge AI is a web-based Minimum Viable Product (MVP) that translates three Nigerian languages (Igbo, Yoruba, Hausa) to English in near real-time. The system accepts text or audio input, detects the input language, and displays English translations using AI/ML techniques. This tool aims to assist travelers, NGOs, and aid organizations.
 
-**Key Features**:
-- Input: Text (with optional audio as a bonus feature)
+**Key Features (MVP) **:
+- Input: Text 
 - Language Detection: Igbo, Yoruba, Hausa
 - Translation: To English using HuggingFace models
 - Web Interface: Simple UI built with Streamlit or Flask
 - Tech Stack: PyTorch, HuggingFace, Streamlit/Flask, Pandas, NumPy, Git, Render/Railway
 
+**Additional Features **:
+- Audio input
+- Audio feedback
+  
 ## Setup Instructions
 To set up the project locally:
 1. Install Python 3.8+: `python --version`
@@ -68,4 +72,4 @@ To set up the project locally:
 - Render Deployment: render.com/docs
 
 ## License
-MIT License (optional, to be finalized based on internship requirements).
+MIT License (To be finalized based on internship requirements).
