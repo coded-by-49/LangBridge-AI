@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE cesAlign PUBLIC "-//CES//DTD XML cesAlign//EN" "">
+<cesAlign version="1.0">
+<linkGrp targType="s" fromDoc="en/0rWGviAAKkpk.xml.gz" toDoc="yor/0rWGviAAKkpk.xml.gz">
+<link xtargets="1;1" />
+<link xtargets="2;2" />
+<link xtargets="3 4 5;3" />
+<link xtargets="6;4" />
+<link xtargets="7;5" />
+<link xtargets="8;6" />
+<link xtargets="9;7" />
+<link xtargets="10;8" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/54iAaUbE1GfE.xml.gz" toDoc="yor/54iAaUbE1GfE.xml.gz">
+<link xtargets="1 2 3;1" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/ADgxXZj4SVTx.xml.gz" toDoc="yor/ADgxXZj4SVTx.xml.gz">
+<link xtargets="1;1 2" />
+<link xtargets="2;3" />
+<link xtargets="3 4;4" />
+<link xtargets="5;5" />
+<link xtargets="6;6" />
+<link xtargets="7;7" />
+<link xtargets="8;8" />
+<link xtargets="9;9" />
+<link xtargets="10;10" />
+<link xtargets="11;11" />
+<link xtargets="12 13 14;12" />
+<link xtargets="15 16;13" />
+<link xtargets="17;16" />
+<link xtargets="18 19 20;17" />
+<link xtargets="21;18" />
+<link xtargets="22;19" />
+<link xtargets="23 24 25;20" />
+<link xtargets="26;21 22" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/CJCTjWof6Vy7.xml.gz" toDoc="yor/CJCTjWof6Vy7.xml.gz">
+<link xtargets="1 2 3;1" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/WVL2qxNoFdCC.xml.gz" toDoc="yor/WVL2qxNoFdCC.xml.gz">
+<link xtargets="2;1" />
+<link xtargets="3;2" />
+<link xtargets="4 5;3" />
+<link xtargets="6 7 8;4" />
+<link xtargets="11 12;5" />
+<link xtargets="13 14;6" />
+<link xtargets="15;7" />
+<link xtargets="16;8" />
+<link xtargets="17;9" />
+<link xtargets="18;10" />
+<link xtargets="19 20;11" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/lB6xWd4v35U7.xml.gz" toDoc="yor/lB6xWd4v35U7.xml.gz">
+<link xtargets="1;1" />
+</linkGrp>
+<linkGrp targType="s" fromDoc="en/xpdObHebZ6gU.xml.gz" toDoc="yor/xpdObHebZ6gU.xml.gz">
+<link xtargets="2;2" />
+<link xtargets="3;3" />
+<link xtargets="4;4" />
+<link xtargets="5;5" />
+<link xtargets="6;6" />
+<link xtargets="7;7" />
+<link xtargets="8;8" />
+<link xtargets="9;9" />
+<link xtargets="10;10" />
+<link xtargets="11 12;11" />
+<link xtargets="13;12" />
+<link xtargets="14 15;13" />
+</linkGrp>
+</cesAlign>

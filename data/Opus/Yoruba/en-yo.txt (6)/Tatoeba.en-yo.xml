@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cesAlign PUBLIC "-//CES//DTD XML cesAlign//EN" "http://www.xces.org/dtd/xcesAlign.dtd">
+
+<cesAlign version="1.0">
+ <linkGrp targType="s" fromDoc="en/2019-07-10.xml.gz" toDoc="yo/2019-07-10.xml.gz">
+  <link xtargets="1434;3808207" />
+  <link xtargets="1646;4535812" />
+  <link xtargets="1860;3633484" />
+  <link xtargets="256018;3143489" />
+  <link xtargets="373216;4641859" />
+  <link xtargets="477086;4536797" />
+  <link xtargets="773503;3714005" />
+  <link xtargets="1399479;4266589" />
+  <link xtargets="2064575;3713961" />
+  <link xtargets="2412739;3081443" />
+  <link xtargets="5257037;3143475" />
+  <link xtargets="3143476;3143477" />
+  <link xtargets="3143478;3143483" />
+  <link xtargets="3143479;3143485" />
+  <link xtargets="3143480;3143486" />
+  <link xtargets="3143482;3143487" />
+  <link xtargets="3143490;3143491" />
+  <link xtargets="3143495;3143493" />
+  <link xtargets="5226593;3143493" />
+  <link xtargets="3143497;3143498" />
+  <link xtargets="3143499;3143500" />
+  <link xtargets="3143502;3143503" />
+  <link xtargets="3154933;3154934" />
+  <link xtargets="3154937;3154939" />
+  <link xtargets="3154996;3154998" />
+  <link xtargets="3179083;3179086" />
+  <link xtargets="3180912;3180913" />
+  <link xtargets="3188277;3197736" />
+  <link xtargets="3352026;3352025" />
+  <link xtargets="3352033;3352030" />
+  <link xtargets="3663249;3713991" />
+  <link xtargets="3861611;5978173" />
+  <link xtargets="4536791;4536795" />
+  <link xtargets="4536799;4536800" />
+ </linkGrp>
+ <linkGrp targType="s" fromDoc="en/2020-05-31.xml.gz" toDoc="yo/2020-05-31.xml.gz">
+  <link xtargets="611372;8773821" />
+ </linkGrp>
+ <linkGrp targType="s" fromDoc="en/2023-04-12.xml.gz" toDoc="yo/2023-04-12.xml.gz">
+  <link xtargets="10739161;10739593" />
+  <link xtargets="11207160;11207159" />
+  <link xtargets="11207163;11207162" />
+  <link xtargets="11207167;11207166" />
+ </linkGrp>
+</cesAlign>

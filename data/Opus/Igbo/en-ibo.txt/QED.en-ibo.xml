@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE cesAlign PUBLIC "-//CES//DTD XML cesAlign//EN" "">
+<cesAlign version="1.0">
+<linkGrp targType="s" fromDoc="en/BhT0XnBD94o6.xml.gz" toDoc="ibo/BhT0XnBD94o6.xml.gz">
+<link xtargets="1;1" />
+<link xtargets="2;2" />
+<link xtargets="3 4;3" />
+<link xtargets="5;4" />
+<link xtargets="6;5" />
+<link xtargets="7;6" />
+<link xtargets="8;7" />
+<link xtargets="9 10 11;8" />
+<link xtargets="17 18 19;9" />
+<link xtargets="25;10" />
+<link xtargets="26 27 28;11" />
+<link xtargets="31 32 33;12" />
+</linkGrp>
+</cesAlign>

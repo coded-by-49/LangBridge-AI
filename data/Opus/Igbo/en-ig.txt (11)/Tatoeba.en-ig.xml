@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cesAlign PUBLIC "-//CES//DTD XML cesAlign//EN" "http://www.xces.org/dtd/xcesAlign.dtd">
+
+<cesAlign version="1.0">
+ <linkGrp targType="s" fromDoc="en/2019-07-10.xml.gz" toDoc="ig/2019-07-10.xml.gz">
+  <link xtargets="54604;6464872" />
+  <link xtargets="1565471;3610765" />
+  <link xtargets="5308161;5327630" />
+  <link xtargets="6788710;6789584" />
+  <link xtargets="6788710;6789585" />
+  <link xtargets="6788711;6789586" />
+  <link xtargets="6788712;6789587" />
+  <link xtargets="6788713;6789589" />
+  <link xtargets="6788714;6789591" />
+  <link xtargets="6788715;6789592" />
+  <link xtargets="6788718;6789594" />
+  <link xtargets="6788718;6789595" />
+  <link xtargets="6788720;6789596" />
+  <link xtargets="6788721;6789597" />
+  <link xtargets="6788722;6789598" />
+  <link xtargets="6788723;6789599" />
+  <link xtargets="6788723;6789601" />
+  <link xtargets="6788724;6789602" />
+  <link xtargets="6788725;6789605" />
+  <link xtargets="6788727;6789607" />
+  <link xtargets="6789007;6789583" />
+ </linkGrp>
+</cesAlign>

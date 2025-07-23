@@ -1,0 +1,43 @@
+ Corpus Name: WikiTitles
+     Package: WikiTitles.en-ig in Moses format
+     Website: http://opus.nlpl.eu/WikiTitles-v3.php
+     Release: v3
+Release date: 2022-11-25
+   OPUS date: Fri Nov 25 11:49:41 EET 2022
+     License: CC-BY-SA 4.0
+   Copyright: The actual packaging of this parallel data is licensed under the Creative Commons CC0 license (no rights reserved). For take-down policy, see <a href=https://www.paracrawl.eu/releases.html>https://www.paracrawl.eu/releases.html</a>
+     Contact: Barry Haddow (bhaddow _at_ inf _dot_ ed _dot_ ac _dot_ uk)
+
+This package is part of OPUS - the open collection of parallel corpora
+OPUS Website: http://opus.nlpl.eu
+
+If you use the data, please cite the most recent WMT overview paper (currently https://aclanthology.info/papers/W18-6401/w18-6401) and also <a href=http://opus.lingfil.uu.se/LREC2012.txt>acknowledge the following article</a> if you use the OPUS packages and downloads in your own work:<br/> J. Tiedemann, 2012, <a href=http://www.lrec-conf.org/proceedings/lrec2012/pdf/463_Paper.pdf><i>Parallel Data, Tools and Interfaces in OPUS.</i></a> In Proceedings of the 8th International Conference on Language Resources and Evaluation (LREC 2012)
+
+This corpus contains data released for the WMT series of shared tasks. It consists of parallel wikipedia titles.
+The code used to extract the wikititles is available at https://github.com/bhaddow/wikipedia-interlanguage-titles
+
+Additional information:
+
+Overview
+--------
+This directory contains the wikitles corpus, released for  the WMT series
+of shared tasks. It consists of parallel wikipedia titles.
+
+There is a subdirectory for each version.
+
+The code used to extract the wikititles is available at https://github.com/bhaddow/wikipedia-interlanguage-titles
+
+Licence
+-------
+The data is released on the same terms as the ParaCrawl (www.paracrawl.eu) data, i.e.:
+- We do not own any of the text from which this data has been extracted.
+- We license the actual packaging of this parallel data under the Creative Commons CC0 license ("no rights reserved").
+For take-down policy, see https://www.paracrawl.eu/releases.html
+
+Citation
+--------
+If you use the data, please cite the most recent WMT overview paper (currently https://aclanthology.info/papers/W18-6401/w18-6401)
+
+Contact
+-------
+Barry Haddow (bhaddow _at_ inf _dot_ ed _dot_ ac _dot_ uk)
