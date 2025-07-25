@@ -1,4 +1,4 @@
-import pandas as pd 
+import pandas as pd
 from itertools import zip_longest
 import os 
 

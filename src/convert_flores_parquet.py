@@ -33,7 +33,7 @@ pairs = [
     # ("data/Flores200/Igbo/ibo_latn(dev).parquet", "data/Flores200/English/eng_latn(dev).parquet", "igbo", "data/Flores200/ibo_en_dev.csv"),
     # ("data/Flores200/Igbo/ibo_latn(devtest).parquet", "data/Flores200/English/eng_latn(devtest).parquet", "igbo", "data/Flores200/ibo_en_devtest.csv"),
     # ("data/Flores200/Yoruba/yor_latn(dev).parquet", "data/Flores200/English/eng_latn(dev).parquet", "yoruba", "data/Flores200/yor_en_dev.csv"),
-    ("data/Flores200/Yoruba/yor_latn(devtest).parquet", "data/Flores200/English/eng_latn(devtest).parquet", "yoruba", "data/Flores200/yor_en_devtest.csv")
+    # ("data/Flores200/Yoruba/yor_latn(devtest).parquet", "data/Flores200/English/eng_latn(devtest).parquet", "yoruba", "data/Flores200/yor_en_devtest.csv")
 ]
 
 for lang_file, eng_file, lang_name, output_csv in pairs:
