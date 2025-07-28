@@ -1,3 +1,5 @@
+"""Conversion of jw300 to csv"""
+
 import pandas as pd
 with open("data/Jw300/jw300.ig.txt", "r", encoding="utf-8") as f:
     igbo_lines = [line.strip() for line in f]  # make each line a list item 
