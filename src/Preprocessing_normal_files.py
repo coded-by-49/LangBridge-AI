@@ -1,8 +1,8 @@
 import pandas as pd
 import os
 from itertools import zip_longest
-import unicodedata
 import logging
+
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
@@ -161,12 +161,11 @@ para_for_preprocessing = [
     # ("data/Opus/Yoruba/clean_files/en-yo.txt(1)/XLEnt.en-yo.en","data/Opus/Yoruba/clean_files/en-yo.txt(1)/XLEnt.en-yo.yo","yoruba","data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv"),
 ]
 
-for clean_en_file,clean_lang_file,lang_name,output_csv in para_for_preprocessing:
+# for clean_en_file,clean_lang_file,lang_name,output_csv in para_for_preprocessing:
 
-    try:
-        convert_to_csv(clean_en_file,clean_lang_file,lang_name,output_csv,batch_size=100)
-    except Exception as e:
-        print(f"{e}")
+#     try:
+#         convert_to_csv(clean_en_file,clean_lang_file,lang_name,output_csv,batch_size=100)
+#     except Exception as e:
+#         print(f"{e}")
 
 
-"PROCESSING TATOEBA AND HYPA_FLUERS DATASET"
