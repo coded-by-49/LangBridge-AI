@@ -78,13 +78,13 @@ def filter_files_by_indices(input_en, input_lang, output_en, output_ha, malforme
     """Remove lines at specified indices from both files."""
     with open(input_en, "rb") as en_file, \
          open(input_lang, "rb") as lang_file, \
-         open(output_en, "w", encoding="utf-8") as clean_en, \
-         open(output_ha, "w", encoding="utf-8") as clean_ha:
+         open(output_en, "w", encoding="utf-8") as clean_eng_file, \
+         open(output_ha, "w", encoding="utf-8") as clean_lang_file:
         for i, (en_line, lang_line) in enumerate(zip(en_file, lang_file)):
             if i not in malformed_indices:
                 try:
-                    clean_en.write(en_line.decode("utf-8", errors="replace").strip() + "\n")
-                    clean_ha.write(lang_line.decode("utf-8", errors="replace").strip() + "\n")
+                    clean_eng_file.write(en_line.decode("utf-8", errors="replace").strip() + "\n")
+                    clean_lang_file.write(lang_line.decode("utf-8", errors="replace").strip() + "\n")
                 except Exception:
                     continue
     print(f"Filtered files saved: {output_en}, {output_ha}")
@@ -96,14 +96,15 @@ def convert_to_csv(clean_en_file,clean_lang_file,lang_name,output_csv,batch_size
         chunk = []
         for i,(en_line, ha_line) in enumerate(zip(en_file,lang_file)):
             try:
-                # decode each line
+                # decode each line and mark out errors withing them 
                 en_text = en_line.decode("utf-8",errors="replace").strip()
-                ha_text = ha_line.decode("utf-8", errors = "replace").strip()
+                lang_text = ha_line.decode("utf-8", errors = "replace").strip()
                 
                
-                if en_text and ha_text: #ensuring both are non-empty
-                    chunk.append({lang_name:ha_text,"english":en_text})
-            except Exception:
+                if en_text and lang_text: #ensuring both are non-empty
+                    chunk.append({lang_name:lang_text,"english":en_text})
+            except Exception as e:
+                raise f'{e}'
                 continue
 
             # append each chunk to the output_csv
