@@ -24,7 +24,7 @@ trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<e
 # saving tokenizer 
 # tokenizer.save("tokenizers/tokenizer_igbo_en.json")
 
-""" Merging all data corpus for BPE tokenisatio """
+""" Merging all data corpus for BPE tokenisation """
 igbo_datasets = [
     "data/Flores200/Processed_csv/Igbo/ibo_en_dev.csv",
     "data/Flores200/Processed_csv/Igbo/ibo_en_devtest.csv",
@@ -65,13 +65,53 @@ hausa_datasets = [
     "data/Tatoeba/preprocessed_csv/hau_en.csv"
 ]
 
+all_datasets = [
+    "data/Flores200/Processed_csv/Yoruba/yor_en_dev.csv",
+    "data/Flores200/Processed_csv/Yoruba/yor_en_devtest.csv",
+    "data/Hypa_fleurs/Processed_csv/Yoruba_eng.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/GlobalVoices_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/GNOME_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/NLLB_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/QED_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/Tatoeba_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/Ubuntu_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/wikimedia_yo_en.csv",
+    "data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv",
+    "data/Tatoeba/preprocessed_csv/yor_en.csv",
+    "data/Flores200/Processed_csv/Igbo/ibo_en_dev.csv",
+    "data/Flores200/Processed_csv/Igbo/ibo_en_devtest.csv",
+    "data/Hypa_fleurs/Processed_csv/Igbo_eng.csv",
+    "data/Jw300/Processed_csv/Igbo/ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/CCAligned_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/GNOME_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/QED_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/Ubuntu_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/WikiTitles_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/Tatoeba_ig_en.csv",
+    "data/Opus/Preprocessed_csv/Igbo/XLENT_ig_en.csv",
+    "data/Tatoeba/preprocessed_csv/ibo_en.csv",
+    "data/Flores200/Processed_csv/Hausa/ha_en_dev.csv",
+    "data/Flores200/Processed_csv/Hausa/ha_en_devtest.csv",
+    "data/Hypa_fleurs/Processed_csv/Hausa_eng.csv",
+    "data/Opus/Preprocessed_csv/Hausa/CCMatrix_ha_en.csv",
+    "data/Opus/Preprocessed_csv/Hausa/QED_ha_en.csv",
+    "data/Opus/Preprocessed_csv/Hausa/WikiTitles_ha_en.csv",
+    "data/Tatoeba/preprocessed_csv/hau_en.csv",
+]
 """Merging dataset"""
 def merge_datasets(lang_name,Datasets_for_lang):
     text = []
     for file in Datasets_for_lang:
         df = pd.read_csv(file)
-        text.extend(df[lang_name].tolist() + df['english'].tolist())
+        text.extend(df[lang_name].tolist())
+    print(f"A total of {len(text)} lines of {lang_name} has been merged.")
     return text 
+
+all_igbo = merge_datasets("igbo",igbo_datasets)
+all_yoruba = merge_datasets("yoruba",yoruba_datasets)
+all_hausa = merge_datasets("hausa",hausa_datasets)
+all_english = merge_datasets("english", all_datasets)
+
 """Saving clean merged data as pickle file"""
 def save_merged_file(file_path, list_of_items):
     try:
@@ -80,6 +120,11 @@ def save_merged_file(file_path, list_of_items):
             print(f"Dataset merged and saved to {file_path}.")
     except Exception as e :
         print(f"unable to store because of {e}")
+
+save_merged_file("data/Merged_data/Hausa/all_hausa.pkl",all_hausa)
+save_merged_file("data/Merged_data/Igbo/all_igbo.pkl",all_igbo)
+save_merged_file("data/Merged_data/Yoruba/all_yoruba.pkl",all_yoruba)
+save_merged_file("data/Merged_data/English/all_english.pkl",all_english)
 
 """Loading merged pickle files"""
 def load_pickle_file(pickle_file_path):
@@ -91,19 +136,19 @@ def load_pickle_file(pickle_file_path):
     except Exception as e:
         print(f"Error occured during pickle --- {e}")
 
-pickle_igbo_path = "data/Merged_data/Igbo/merged_igbo_eng.pkl"
-clean_merged_igbo_eng = load_pickle_file(pickle_igbo_path)
+# pickle_igbo_path = "data/Merged_data/Igbo/merged_igbo_eng.pkl"
+# clean_merged_igbo_eng = load_pickle_file(pickle_igbo_path)
 
 
-# intialization of tokenizer
-tokenizer = Tokenizer(BPE())
-tokenizer.pre_tokenizer = Whitespace()
-# configuration of tokenizer trainer
-trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<eos>", "<unk>"])
-# training tokenizer 
-tokenizer.train_from_iterator(clean_merged_igbo_eng,trainer)
-# saving tokenizer 
-tokenizer.save("Tokenizers/tokenizer_igbo_en.json")
+''' intialization of tokenizer '''
+# tokenizer = Tokenizer(BPE())
+# tokenizer.pre_tokenizer = Whitespace()
+# # configuration of tokenizer trainer
+# trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<eos>", "<unk>"])
+# # training tokenizer 
+# tokenizer.train_from_iterator(clean_merged_igbo_eng,trainer)
+# # saving tokenizer 
+# tokenizer.save("Tokenizers/tokenizer_igbo_en.json")
 
 
 """Pretokenization tests -> derivation of optimal maximum length for tokenization """
@@ -125,7 +170,7 @@ def max_length_evaluator(lang_eng_list_raw_text):
 
 
 
-"""  tokenization of datasets """
+""" tokenization of datasets """
 def tokenize_sentences(sentences, tokenizer, max_length = 60):
     # transformation of sentence to tokens with 
     encodings = [tokenizer.encode(f"<sos> {s} <eos>").ids for s  in sentences]
@@ -145,8 +190,8 @@ if "<unk>" in loaded_tokenizer.get_vocab():
 else:
     print("Error: <unk> not in vocabulary! Retrain the tokenizer.")
 
-tokenzised_lang_tensor = tokenize_sentences(clean_merged_igbo_eng,loaded_tokenizer)
-print(torch.is_tensor(tokenzised_lang_tensor))
+# tokenzised_lang_tensor = tokenize_sentences(clean_merged_igbo_eng,loaded_tokenizer)
+# print(torch.is_tensor(tokenzised_lang_tensor))
 
 # torch.save(tokenzised_lang_tensor,"data/Tokenized_data/Igbo/tokenized_ibo_eng.pt")
 
@@ -195,4 +240,4 @@ def round_trip_check(merged_lang_tensor, tokenizer, num_samples=10000):
         f"Concordance Rate: {((effective_samples - disconcordant_count) / effective_samples) * 100:.2f}%\n"
     )
 
-print(round_trip_check(clean_merged_igbo_eng , loaded_tokenizer))
+# print(round_trip_check(clean_merged_igbo_eng , loaded_tokenizer))
