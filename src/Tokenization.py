@@ -24,131 +24,21 @@ trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<e
 # saving tokenizer 
 # tokenizer.save("tokenizers/tokenizer_igbo_en.json")
 
-""" Merging all data corpus for BPE tokenisation """
-igbo_datasets = [
-    "data/Flores200/Processed_csv/Igbo/ibo_en_dev.csv",
-    "data/Flores200/Processed_csv/Igbo/ibo_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Igbo_eng.csv",
-    "data/Jw300/Processed_csv/Igbo/ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/CCAligned_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/GNOME_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/QED_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/Ubuntu_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/WikiTitles_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/Tatoeba_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/XLENT_ig_en.csv",
-    "data/Tatoeba/preprocessed_csv/ibo_en.csv"
-]
 
-yoruba_datasets = [
-    "data/Flores200/Processed_csv/Yoruba/yor_en_dev.csv",
-    "data/Flores200/Processed_csv/Yoruba/yor_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Yoruba_eng.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/GlobalVoices_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/GNOME_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/NLLB_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/QED_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/Tatoeba_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/Ubuntu_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/wikimedia_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv",
-    "data/Tatoeba/preprocessed_csv/yor_en.csv"
-]
-
-hausa_datasets = [
-    "data/Flores200/Processed_csv/Hausa/ha_en_dev.csv",
-    "data/Flores200/Processed_csv/Hausa/ha_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Hausa_eng.csv",
-    "data/Opus/Preprocessed_csv/Hausa/CCMatrix_ha_en.csv",
-    "data/Opus/Preprocessed_csv/Hausa/QED_ha_en.csv",
-    "data/Opus/Preprocessed_csv/Hausa/WikiTitles_ha_en.csv",
-    "data/Tatoeba/preprocessed_csv/hau_en.csv"
-]
-
-all_datasets = [
-    "data/Flores200/Processed_csv/Yoruba/yor_en_dev.csv",
-    "data/Flores200/Processed_csv/Yoruba/yor_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Yoruba_eng.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/GlobalVoices_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/GNOME_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/NLLB_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/QED_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/Tatoeba_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/Ubuntu_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/wikimedia_yo_en.csv",
-    "data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv",
-    "data/Tatoeba/preprocessed_csv/yor_en.csv",
-    "data/Flores200/Processed_csv/Igbo/ibo_en_dev.csv",
-    "data/Flores200/Processed_csv/Igbo/ibo_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Igbo_eng.csv",
-    "data/Jw300/Processed_csv/Igbo/ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/CCAligned_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/GNOME_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/QED_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/Ubuntu_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/WikiTitles_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/Tatoeba_ig_en.csv",
-    "data/Opus/Preprocessed_csv/Igbo/XLENT_ig_en.csv",
-    "data/Tatoeba/preprocessed_csv/ibo_en.csv",
-    "data/Flores200/Processed_csv/Hausa/ha_en_dev.csv",
-    "data/Flores200/Processed_csv/Hausa/ha_en_devtest.csv",
-    "data/Hypa_fleurs/Processed_csv/Hausa_eng.csv",
-    "data/Opus/Preprocessed_csv/Hausa/CCMatrix_ha_en.csv",
-    "data/Opus/Preprocessed_csv/Hausa/QED_ha_en.csv",
-    "data/Opus/Preprocessed_csv/Hausa/WikiTitles_ha_en.csv",
-    "data/Tatoeba/preprocessed_csv/hau_en.csv",
-]
-"""Merging dataset"""
-def merge_datasets(lang_name,Datasets_for_lang):
-    text = []
-    for file in Datasets_for_lang:
-        df = pd.read_csv(file)
-        text.extend(df[lang_name].tolist())
-    print(f"A total of {len(text)} lines of {lang_name} has been merged.")
-    return text 
-
-all_igbo = merge_datasets("igbo",igbo_datasets)
-all_yoruba = merge_datasets("yoruba",yoruba_datasets)
-all_hausa = merge_datasets("hausa",hausa_datasets)
-all_english = merge_datasets("english", all_datasets)
-
-"""Saving clean merged data as pickle file"""
-def save_merged_file(file_path, list_of_items):
-    try:
-        with open(file_path,"wb") as file:
-            pickle.dump(list_of_items,file)
-            print(f"Dataset merged and saved to {file_path}.")
-    except Exception as e :
-        print(f"unable to store because of {e}")
-
-save_merged_file("data/Merged_data/Hausa/all_hausa.pkl",all_hausa)
-save_merged_file("data/Merged_data/Igbo/all_igbo.pkl",all_igbo)
-save_merged_file("data/Merged_data/Yoruba/all_yoruba.pkl",all_yoruba)
-save_merged_file("data/Merged_data/English/all_english.pkl",all_english)
-
-"""Loading merged pickle files"""
-def load_pickle_file(pickle_file_path):
-    try:
-        with open (pickle_file_path, "rb") as file:
-            loaded_lists = pickle.load(file)
-            type(loaded_lists)
-            return loaded_lists
-    except Exception as e:
-        print(f"Error occured during pickle --- {e}")
 
 # pickle_igbo_path = "data/Merged_data/Igbo/merged_igbo_eng.pkl"
 # clean_merged_igbo_eng = load_pickle_file(pickle_igbo_path)
 
 
 ''' intialization of tokenizer '''
-# tokenizer = Tokenizer(BPE())
-# tokenizer.pre_tokenizer = Whitespace()
-# # configuration of tokenizer trainer
-# trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<eos>", "<unk>"])
-# # training tokenizer 
+tokenizer = Tokenizer(BPE())
+tokenizer.pre_tokenizer = Whitespace()
+# configuration of tokenizer trainer
+trainer = BpeTrainer(vocab_size = 60000, special_tokens = ["<pad>", "<sos>", "<eos>", "<unk>"])
+# training tokenizer 
 # tokenizer.train_from_iterator(clean_merged_igbo_eng,trainer)
-# # saving tokenizer 
-# tokenizer.save("Tokenizers/tokenizer_igbo_en.json")
+# saving tokenizer 
+tokenizer.save("Tokenizers/tokenizer_igbo_en.json")
 
 
 """Pretokenization tests -> derivation of optimal maximum length for tokenization """
