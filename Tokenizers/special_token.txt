@@ -1,0 +1,111 @@
+Nípa GNOME
+Ko eko si i lori GNOME
+Làbárè
+Abánirẹ GNOME
+Ìbẹwò
+Àràmàdà GEGL
+Wanda ẹja GNOME
+Nípa ojú ìdarí kọmpútà GNOME
+Ẹkú àbọ sí orí ètò ìdarí kọmpútà GNOME
+Nípasẹ
+Ìfihàn
+Aṣojú
+ẹyajợ àkójọ
+Isipaya eda GNOME
+GNOME Jẹ oun tí ò gbààyè, tì o ṣé lò, tí o fẹsẹ múlẹ, abánirẹ àyíká ìlànà kọmpútà fún ojúlùmọ Unix ti ìdarí kọmpútà
+GNOME pẹlúu ọpọ àwọn ohun tí ó yọ lójú kọmpútà, tí ò pẹlú páálí ìwéolùdarí, ìbojúwo ìwunpọ, ètò, àti ọpọlọpọ ìdarí kọmpútà.<|endofprompt|>
+GNOME tún ní àpapọ ète ìdàgbàsókè fún ìdarí kọmpútà
+Ìfojúsí GNOME Lórí lílò àti ìbánirẹ , ìlọ-dédé, àti àtìlẹyìn ìgbóra àjọṣepọ mú kí ó ní ìyàtọ láàrin ojú ìdarí kọmpútà
+Ipa pàtàkì GNOME Jẹ ìgbóra àgbèègbè wa. Ódàbì pé ẹnikẹni tí ó ní ìmọ ojútùú tàbí tí kò ní, lè sapa àti mú GNOME dára si.<|endofprompt|>
+UnknownMonitor vendor
+Àṣìṣe kíkà ìwé '%s': %s
+Àṣìṣe ìyípadà ìwé '%s': %snamename
+kò sí orúkọ
+páálí ìwé '%s' kì ṣè nkan déédé tàbí amọnà
+ko sì orúkọ páálí ìwé láti fi nkan ránṣẹ sí
+Ìbẹrẹ %s
+kò sí URL láti pilẹ síwájú
+kìí ṣe irú nkan láti fi bẹrẹ
+kò sí àṣẹ láti fi bẹrẹ
+Àṣẹ búburú láti fi bẹrẹ
+Àìrí ojútu fún: %s
+position", "size", and "maximum
+requested", "minimummaximum
+MirrorPantallas en Espejo", *not* "Espejar Pantallas
+position", "size", and "maximum
+requested", "minimummaximum
+Ìró & Fídíò
+Àtòjọ-ẹ̀yàn agbé-ọ̀pọ̀-ìròyìn-jáde
+Ìlànà ìdaríi
+Àwọn Eelo fún sise agekale ẹ̀yà-àìfojúrí
+Ẹ̀kọ́
+Àwọn Ayò
+Àwọn ayò àti àwọn eré-àṣenọjú
+Gíráfíìsì
+Àwọn ìṣàmúlò-ètò Aworan
+Ítánẹ́̀ẹ̀tì
+Àwọn àtòjọ-ètò fún ìráyè ítánẹ́̀ẹ̀tì bíi wẹ́ẹ̀bù àti lẹ́tà kọ̀ǹpútà
+Ọ́fíìsì
+Àwọn Ìṣàmúlò-ètò Ọ́fíìsì
+Àwọn Irinṣẹ́ Ètò Kọ̀ǹpútà
+Ìṣàmójútó àti àtòpọ̀ ètò kọ̀ǹpútà
+Aaye si Agbaye
+Wonu Agbaye
+Àwọn Àsẹ́sírì
+Àwọn àsẹ́sírì ojù-iṣẹ́
+Àwọn Ìṣàmúlò-ètò
+Òmíràn
+Àwọn ìsàmúlò-ètò tí kò bá àwọn ọ̀wọ́ mìíràn mu
+Ìṣàkóso
+Àwọn ìkúndùn
+Àwọn ìkúndùn aládàáni
+ẹ̀yà-à̀fojúrí
+Personal settings
+Ìró & Fídíò
+Àtòjọ-ẹ̀yàn agbé-ọ̀pọ̀-ìròyìn-jáde
+Ìṣàtòjọ-ètò
+Àwọn irinṣẹ́ fún ìdàgbàsókè ẹ̀yà-ará kọ̀ǹpútà àìfojúrí
+Ẹ̀kọ́
+Àwọn Ayò
+Àwọn ayò àti àwọn eré-àṣenọjú
+Gíráfíìsì
+Àwọn ìṣàmúlò-ètò gíráfíìsì
+Ítánẹ́̀ẹ̀tì
+Àwọn àtòjọ-ètò fún ìráyè ítánẹ́̀ẹ̀tì bíi wẹ́ẹ̀bù àti lẹ́tà kọ̀ǹpútà
+Ọ́fíìsì
+Àwọn Ìṣàmúlò-ètò Ọ́fíìsì
+Personal settings
+Àwọn Irinṣẹ́ Ètò Kọ̀ǹpútà
+Ìṣàmójútó àti àtòpọ̀ ètò kọ̀ǹpútà
+Àwọn Àsẹ́sírì
+Àwọn àsẹ́sírì ojù-iṣẹ́
+Àwọn Ìṣàmúlò-ètò
+Òmíràn
+Àwọn ìsàmúlò-ètò tí kò bá àwọn ọ̀wọ́ mìíràn mu
+Olótùú Àtòjọ-ẹ̀yàn
+Ṣàyẹ̀wò Àwọn Àtòjọ-ẹ̀yàn
+_Àwọn ìpéwọ̀n
+_Àwọn Àtòjọ-ẹ̀yàn:
+_Àwọn Ìṣàmúlò-ètò:
+Orúkọ
+Fihàn
+Kò lè wá atọ́nà ilé: kò sí àgbékalẹ̀ rẹ̀ ní /etc/passwd kò sí oye fún $HOME ní àyíká
+Ṣàfikún Àtòjọ-ètò Fún Ìbẹ̀rẹ̀
+Ṣàyẹ̀wò Àtòjọ-ètò Fún Ìbẹ̀rẹ̀
+Àṣẹ fún ìbẹ̀rẹ̀ kò lè jẹ́ òfìfo
+Àtòjọ-ètò
+Àwọn àtòjọ-ètò fún ìbẹ̀rẹ̀ _aláfikún:
+Kò lè darapọ̀ mọ́ alábòójútó sáà
+Gbé fèrèsé lọ sí ààyè-iṣẹ́ kìíní
+Gbé fèrèsé lọ sí ààyè-iṣẹ́ kejì
+Gbé fèrèsé lọ sí ààyè-iṣẹ́ kẹta
+Gbé fèrèsé lọ sí ààyè-iṣẹ́ kẹrin
+Gbé ààyè-iṣẹ́ fèrèsé kan sí òsì
+Gbé ààyè-iṣẹ́ fèrèsé kan sí ọ̀tún
+Gbé ààyè-iṣẹ́ fèrèsé kan sókè
+Gbé ààyè-iṣẹ́ fèrèsé kan wálẹ̀
+Sún sí ààyè-iṣẹ́ kìíní
+Sún sí ààyè-iṣẹ́ kejì
+Sún sí ààyè-iṣẹ́ kẹta
+Sún sí ààyè-iṣẹ́ kẹrin
+Tọ́gù móòdù ojú kọ̀ǹpútà kíkú<|endoftext|>

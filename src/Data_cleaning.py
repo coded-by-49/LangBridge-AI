@@ -2,6 +2,11 @@ import pandas as pd
 import os
 from itertools import zip_longest
 import logging
+import xml.etree.ElementTree as ET
+import pickle 
+import csv
+from glob import glob
+import re
 
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -157,10 +162,10 @@ def convert_to_csv(clean_en_file,clean_lang_file,lang_name,output_csv,batch_size
 
 
 """CREATION AND STORAGE OF CSV"""
-para_for_preprocessing = [
-    # (clean_en_file                      clean_lang_file                        language_name                         csvdestination)
-    # ("data/Opus/Yoruba/clean_files/en-yo.txt(1)/XLEnt.en-yo.en","data/Opus/Yoruba/clean_files/en-yo.txt(1)/XLEnt.en-yo.yo","yoruba","data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv"),
-]
+# para_for_preprocessing = [
+#     # (clean_en_file                      clean_lang_file                        language_name                         csvdestination)
+#     # ("data/IGBONLP_master/GoURMET.en-ig.en","data/Opus/Yoruba/clean_files/en-yo.txt(1)/XLEnt.en-yo.yo","yoruba","data/Opus/Preprocessed_csv/Yoruba/XLENT_yo_en.csv"),
+# ]
 
 # for clean_en_file,clean_lang_file,lang_name,output_csv in para_for_preprocessing:
 
@@ -170,3 +175,115 @@ para_for_preprocessing = [
 #         print(f"{e}")
 
 
+"""Extraction of data from EAF AND EAFL FILES"""
+file_path = []
+
+
+def extract_annotations(eaf_l_file_paths, destination_file_path):
+    try:
+        with open(destination_file_path, "rb") as f :
+            large_lang_file = pickle.load(f)
+    except Exception as e:
+        print(f"either the file is non-existant or {e}")
+    
+    merged_file_len = len(large_lang_file)
+
+    for file_path in eaf_l_file_paths :
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+        
+        # for annotations file 
+        for ann_val in root.findall(".//ANNOTATION_VALUE"):
+            if ann_val.text:
+                annotation_text = ann_val.text.strip()
+                if 'X' in annotation_text or 'x' in annotation_text or '#' in annotation_text:
+                        continue  
+                large_lang_file.append(annotation_text)
+
+        # # for links file 
+        # id_to_text = {}
+        # for seg in root.findall(".//{*}seg"):
+        #     seg_id = seg.attrib.get("id")
+        #     text = seg.text.strip() if seg.text else ""
+        #     id_to_text[seg_id] = text
+
+        # for link in root.findall(".//{*}link"):
+        #     xtargets = link.attrib.get("xtargets", "")
+        #     target_ids = xtargets.split(";")
+        #     texts = [id_to_text.get(tid, "") for tid in target_ids]
+        #     large_lang_file.append(texts)
+
+
+
+    with open(destination_file_path, 'wb') as f:
+        pickle.dump(large_lang_file, f)
+    print(f"finished processing {len(eaf_l_file_paths)} files and \n the merged igbo dataset has now increased to  {len(large_lang_file) - merged_file_len}")
+    
+# extract_annotations(eaf_file_paths,"data/Merged_data/Igbo/merged_igbo_eng.pkl")
+
+
+try:
+    with open("data/Merged_data/Igbo/merged_igbo_eng.pkl", "rb") as f :
+        large_lang_file = pickle.load(f)
+    print(large_lang_file[:len(large_lang_file)+100 - len(large_lang_file)])
+except Exception as e:
+    print(f"either the file is non-existant or {e}")
+
+Datasets_for_lang = (
+    [(p) for p in sorted(glob("data/Alabi_yor/en/en_*.txt"))] +
+    [(p) for p in sorted(glob("data/Alabi_yor/en/yo_*.txt"))]
+)
+
+
+def extend_merged_data_from_voices(data_files, merged_data_path):
+    """Append lines from utts.data files to the merged pickle dataset."""
+    try:
+        with open(merged_data_path, "rb") as f:
+            merged_data = pickle.load(f)
+    except Exception as e:
+        print(f"Either the file does not exist or {e}")
+        merged_data = []
+
+    start_len = len(merged_data)
+
+    for file in data_files:
+        with open(file, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            # Extract text inside quotes, ignore speaker ID
+            processed_lines = []
+            for line in lines:
+                match = re.search(r'"\s*(.*?)\s*"$', line.strip())
+                if match:
+                    processed_lines.append(match.group(1))
+            merged_data.extend(processed_lines)
+
+    end_len = len(merged_data)
+
+    with open(merged_data_path, 'wb') as f:
+        pickle.dump(merged_data, f)
+
+    print(f"Processed {len(data_files)} files. Added {end_len - start_len} new lines.")
+
+
+def merged_yoruba_voices(parent_folder, merged_data_path):
+    """Process all utts.data files under the parent folder (female or male)"""
+    subfolders = sorted([f for f in glob(f"{parent_folder}/*") if os.path.isdir(f)])
+
+    for folder in subfolders:
+        # Only take utts.data files
+        data_files = sorted(glob(os.path.join(folder, "utts.data")))
+        extend_merged_data_from_voices(data_files, merged_data_path)
+
+
+merged_yoruba_voices("data/yoruba_voices/female","data/Merged_data/Yoruba/all_yoruba.pkl")
+merged_yoruba_voices("data/yoruba_voices/male","data/Merged_data/Yoruba/all_yoruba.pkl")
+
+
+
+
+# df = pd.read_csv("data/Alabi_yor/Test.csv")
+# if "ID" in df.columns:
+#     df.drop("ID", inplace=True, axis=1)
+
+# print(df.head())
+# df.to_csv("data/Alabi_yor/Test.csv", sep = " ",index=False, header=False)
