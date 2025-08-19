@@ -79,7 +79,8 @@ def filter_files_by_indices(input_en, input_lang, output_en, output_ha, malforme
                     continue
     print(f"Filtered files saved: {output_en}, {output_ha}")
 
-    """ Merging all data corpus for BPE tokenisation """
+
+""" Merging all data corpus for BPE tokenisation """
 igbo_datasets = [
     "data/Flores200/Processed_csv/Igbo/ibo_en_dev.csv",
     "data/Flores200/Processed_csv/Igbo/ibo_en_devtest.csv",
@@ -223,7 +224,7 @@ def convert_tsv_to_txt(file_paths):
             print(df.columns)
             print(f"Skipping {file_path}: less than 3 columns")
             continue
-        df = df.iloc[:, 1:4]
+        df = df.iloc[:, 1:3]
 
         df.to_csv(file_path.with_suffix('.txt'), sep='\t', header=False, index=False)
 
@@ -291,7 +292,7 @@ def extract_annotations(eaf_l_file_paths, destination_file_path):
     print(f"finished processing {len(eaf_l_file_paths)} files and \n the merged igbo dataset has now increased to  {len(large_lang_file) - merged_file_len}")
 
 """ADDING TEXT FILE TO MERGED LINGUAL DATA"""
-def extend_merged_data(folder_path,merged_data_path):
+def extend_merged_data(file,merged_data_path):
     try:
         with open(merged_data_path, "rb") as f :
             large_lang_file = pickle.load(f)
@@ -302,22 +303,19 @@ def extend_merged_data(folder_path,merged_data_path):
     non_file_count = 0
     num_file = 0
 
-    for file in folder_path.iterdir():
-        num_file += 1
-        if file.is_file():
-            if file.lower().endswith(".csv") or file.suffix.lower() == ".csv":
-                with open(file, "r", encoding="utf-8") as f:
-                    reader = csv.reader(f)
-                    for row in reader:
-                        large_lang_file.extend(row)
-            else:
-                with open(file, "r", encoding="utf-8") as f:
-                    lines = f.readlines()
-                    lines = [line.strip() for line in lines if line.strip()]
-                large_lang_file.extend(lines)
+    if file.is_file():
+        if file.suffix.lower() == ".csv":
+            with open(file, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    large_lang_file.extend(row)
         else:
-            non_file_count +=1
-            continue
+            with open(file, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                lines = [line.strip() for line in lines if line.strip()]
+            large_lang_file.extend(lines)
+    else:
+        print(f"This is not a file")
         
     end_len = len(large_lang_file)
     with open(merged_data_path, 'wb') as f:
@@ -325,6 +323,16 @@ def extend_merged_data(folder_path,merged_data_path):
 
     print(f"finished processing {num_file} files and \n the merged igbo dataset has now increased to  {end_len-start_len}")
     print(f"number of non_files = {non_file_count}")
+
+extend_merged_data(Path("data/Hausa_2/en-ha.csv"),"data/oversampled_merged/oversample_hausa.pkl")
+extend_merged_data(Path("data/Hausa_2/en-ha.csv"),"data/oversampled_merged/oversample_hausa.pkl")
+
+def process_paraquet(paraquet_files):
+    for file in paraquet_files:
+        para_pd = pd.read_parquet(file)
+        para_pd = para_pd[['igbo_cleaned','english_cleaned']]
+        out_file = Path(file).with_suffix(".txt")
+        para_pd.to_csv(out_file,header=False, sep= "\t")
 
 
 

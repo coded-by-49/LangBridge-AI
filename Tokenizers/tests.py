@@ -1,5 +1,6 @@
 from Byte_level_BPE import RegrexBpeTokenizer
 import os
+import pickle
 
 # allowed special tokens 
 special_tokens = {
@@ -32,5 +33,9 @@ def tokenizer_test(text_file_path):
     print(f"\n{len(tokenizer.vocab)}")
     
 
-tokenizer_test("data/Opus/Yoruba/clean_files/en-yo.txt(4)/wikimedia.en-yo.yo")
+# tokenizer_test("data/Opus/Yoruba/clean_files/en-yo.txt(4)/wikimedia.en-yo.yo")
 # Test for special token detection
+with open("/home/fabia/LangBridge_MVP/data/oversampled_merged/all_in_one_corpus.pkl","rb") as f:
+    items = pickle.load(f)
+
+print(items[:10])
