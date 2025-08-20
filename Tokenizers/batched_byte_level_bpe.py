@@ -2,6 +2,8 @@ import regex as re
 from collections import Counter
 from collections import defaultdict
 import unicodedata
+from heapq import nlargest
+
 naija_eng_pattern = re.compile(r"""
 (
     \s+
@@ -14,27 +16,13 @@ naija_eng_pattern = re.compile(r"""
   | .
 )
 """, re.UNICODE | re.VERBOSE)
-
-# self.special_tokens = ("<|startoftext|>","<|endoftext|>","<|endofprompt|>") #come back to this
-def replace_control_characters(self, s: str) -> str:
-    chars = []
-    for ch in s:
-        if unicodedata.category(ch)[0] != "C":
-            chars.append(ch) # this character is ok
-        else:
-            chars.append(f"\\u{ord(ch):04x}") # escape
-    return "".join(chars)
-
-"""Return a cleaned version of each string"""
-def render_token(self, t: bytes) -> str:
-    # pretty print a token, escaping control characters
-    s = t.decode('utf-8', errors='replace')
-    s = self.replace_control_characters(s)
-    return s
+special_tokens = {
+    "<|startoftext|>": 70000,
+    "<|endoftext|>": 70001,
+}
 
 
-
-class RegrexBpeTokenizer:
+class Batched_size_BpeTokenizer:
     def __init__(self,vocab_size,stop_list_size = 100):
         assert vocab_size >= 256
         self.vocab_size = vocab_size
@@ -45,36 +33,6 @@ class RegrexBpeTokenizer:
         self.merges = {}
         self.vocab = {idx: bytes([idx]) for idx in range(256)}
         
-
-    def train(self, list_of_text, batch_size):
-        start = 0
-        end = batch_size
-        while start <= 34350000:
-            text= " ".join(list_of_text[start:end])
-            text_chunks = re.findall(self.compiled_pattern, text)
-            ids = [list(word.encode("utf-8")) for word in text_chunks]
-            current_ids = ids # copying out ids
-            idx = 256
-            num_merges = self.vocab_size - idx
-            for i in range(num_merges):
-                stats = Counter()
-                # look through each pair and return the one with the highest frequency
-                for chunk_ids in current_ids:
-                    self.get_stats(chunk_ids, stats) 
-                if stats:
-                    top_pair = max(stats, key=stats.get)
-                else:
-                    print("No more pairs to merge. Stopping training.")
-                    break
-                new_idx = idx+i
-                current_ids = [self.merge(top_pair,new_idx,chunk_ids) for chunk_ids in current_ids]  # update the token_ids with the new found pairs
-                self.merges[top_pair] = new_idx
-                self.vocab[new_idx] = self.vocab[top_pair[0]] + self.vocab[top_pair[1]]
-            end += batch_size
-            start += batch_size
-        return self.vocab,self.merges
-        
-
     def register_special_tokens(self, special_tokens):
         self.special_tokens = special_tokens  #for encoding 
         self.inverse_special_tokens = {v: k for k, v in special_tokens.items()} # for decoding 
@@ -97,15 +55,13 @@ class RegrexBpeTokenizer:
             self.stop_words = {counts.most_common(self.stop_list_size*2)} 
             # all that is flet is to change the value to the index of our vocab
 
-
         return [([*key.encode('utf-8')], val) for key,val in counts.items() if key not in self.stop_words]
     
-    def get_stats (ids_freq_table):
+    def get_stats (self, ids_freq_table):
         pair_counts = defaultdict(int)
         for ids, freq in ids_freq_table:
             i =  0
             stop = len(ids)-1
-            
             while i<=stop:
                 next = i + 1
                 pair_counts[(ids[i],ids[next])] += freq
@@ -115,18 +71,55 @@ class RegrexBpeTokenizer:
                     i = next
         return pair_counts
     
-    def merge_batch(ids_freq_table, pairs):
+    def merge_batch(self,ids_freq_table, pairs):
+        # pairs ---> {(pair1,pair2):idx}
         for ids, freq in ids_freq_table:
             stop = len(ids) - 1
             i = 0
             while i < stop:
                 next = i + 1
-                token = pairs.get((ids[i], ids[next]))
-                if token is not None:
-                    ids[i] = token
+                token = pairs.get((ids[i], ids[next])) # get id of two consecutive tokens , if they exits as an actual pair in a merged pairs
+                if token is not None: 
+                    ids[i] = token # replace the two consecutive id with id of pair token
                     del ids[next]
                     last_index -= 1
                 i = next
+
+    def train(self, data : list[str], batch_size = 2, max_batch_size = 0, cap_divisor = 2):
+        merges = self.merges
+        vocab = self.vocab
+        batch_count = 0
+        curr_vocab_size = len(vocab) + len(self.special_tokens)
+        num_merges = self.vocab_size - curr_vocab_size
+        merges_remaining = num_merges
+        ids = self.texts_to_ids_freq_table(data) 
+        if max_batch_size < 1:
+            max_batch_size = num_merges
+
+        while merges_remaining > 0:
+            seen_first = set() 
+            seen_last = set()   
+            pairs_to_merge = {}
+            stats = self.get_stats(data)
+            num_pairs_to_search = min(merges_remaining//cap_divisor, len(vocab), max_batch_size) or 1
+            top_pairs = nlargest(num_pairs_to_search, stats, key=stats.get)
+            for first, last in top_pairs:  # pairs are (first, last) tuples
+                if first in seen_last or last in seen_first:   # unsafe merge
+                    seen_first.add(first)
+                    seen_last.add(last)
+                    continue # skip this pair but keep looking for safe merges in top_pairs
+                seen_first.add(first)
+                seen_last.add(last)
+                pairs_to_merge[(first, last)] = curr_vocab_size
+                vocab[curr_vocab_size] = vocab[first] + vocab[last]
+                curr_vocab_size += 1
+            merges_remaining -= len(pairs_to_merge)
+            merges.update(pairs_to_merge)
+            batch_count += 1
+            if merges_remaining:
+                self.merge_batch(ids)
+
+
 
     def decode(self, text_ids):
       #give a list of integers return a python string
@@ -142,25 +135,42 @@ class RegrexBpeTokenizer:
       text = text_bytes.decode("utf-8", errors = "replace")
       return text
     
-    #!!!!1
-    def _encode_chunk(self, chunks):
-        ids = list(chunks)
-        while len(ids) >= 2:
-            stats = self.get_stats(ids)
-            pair = min(stats, key=lambda p: self.merges.get(p, float("inf")))
-            if pair not in self.merges:
-                break # nothing else can be merged anymore
-            idx = self.merges[pair]
-            ids = self.merge(pair, idx, ids)
-        return ids
+    def merge(self, ids : list, pair : tuple, idx, len_ids):
+        i = 0
+        while i + 1 < len_ids:
+            next = i + 1
+            if ids[i] == pair[0] and ids[next] == pair[1]:
+                ids[i] = idx
+                del ids[next]
+                len_ids -= 1
+            i = next
+        return len_ids
+    
+    def _encode_chunk(self, chunk):
+        if chunk in self.stop_words:
+            return [self.stop_words[chunk]]
+        chunk_ids = [*chunk_ids.encode("utf-8")]
+        len_chunk = len(chunk_ids)
+        while len_chunk >= 2:
+            low = 987654321
+            for i in range(len_chunk-1):
+                current_pair = (chunk_ids[i],chunk_ids[i+1])
+                new_val = self.merges.get(current_pair, 987654321)
+                if new_val < low:
+                    pair = current_pair
+                    low = new_val
+            if low == 987654321: 
+                break   
+            idx = self.merges[pair] # get pair id 
+            len_chunk = self.merge(chunk_ids, pair, idx, len_chunk) # replace the consectuve pair digits with this single id
+        return chunk_ids  
     
     def normal_encode(self,text):
         text_chunks = re.findall(self.compiled_pattern, text)
         # all chunks of text are encoded separately, then results are joined
         ids = []
         for chunk in text_chunks:
-            chunk_bytes = chunk.encode("utf-8") # raw bytes
-            chunk_ids = self._encode_chunk(chunk_bytes)
+            chunk_ids = self._encode_chunk(chunk)
             ids.extend(chunk_ids)
         return ids
     
