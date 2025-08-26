@@ -21,6 +21,3 @@ print(len(all_in_one_corpus))
 Tokenizier = RegrexBpeTokenizer(8000)
 vocab,merge = Tokenizier(all_in_one_corpus,150000)
 
-
-
-
