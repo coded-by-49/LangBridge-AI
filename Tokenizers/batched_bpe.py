@@ -179,8 +179,6 @@ class Batched_size_BpeTokenizer:
             print(f"We have a total of {len(self.merges)} merges  \n Our vocab is {len(self.vocab)}\n We have a total of {len(self.single_tokens)} single tokens")
             
 
-
-
     def decode(self, text_ids):
       #give a list of integers return a python string
       bytes_of_text = [] # this are bytes of text from 
@@ -266,5 +264,4 @@ class Batched_size_BpeTokenizer:
                 # this is an ordinary sequence, encode it normally
                 ids.extend(self.normal_encode(part))
         return ids
-
-
+    

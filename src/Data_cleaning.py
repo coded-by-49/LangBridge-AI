@@ -251,6 +251,10 @@ def hypafleurs_load_parquet(lang_file, eng_file, lang_name, output_csv):
     
     print(f"Saved {len(df_lang_with_eng)} {lang_name}-English pairs to {output_csv}")
 
+df = pd.read_parquet("data/parrallel_text/hausa_en_corpus/unprocessed_file/hau1.parquet")
+# print(df.head)
+df.to_csv("data/parrallel_text/igbo_en_corpus/csv_formatted/igbo_par.csv", index=False, encoding="utf-8")
+
 
 """EXTRACTION OF DATA EAF AND EAFL FILES"""
 def extract_annotations(eaf_l_file_paths, destination_file_path):
@@ -324,9 +328,6 @@ def extend_merged_data(file,merged_data_path):
     print(f"finished processing {num_file} files and \n the merged igbo dataset has now increased to  {end_len-start_len}")
     print(f"number of non_files = {non_file_count}")
 
-extend_merged_data(Path("data/Hausa_2/en-ha.csv"),"data/oversampled_merged/oversample_hausa.pkl")
-extend_merged_data(Path("data/Hausa_2/en-ha.csv"),"data/oversampled_merged/oversample_hausa.pkl")
-
 def process_paraquet(paraquet_files):
     for file in paraquet_files:
         para_pd = pd.read_parquet(file)
@@ -334,5 +335,57 @@ def process_paraquet(paraquet_files):
         out_file = Path(file).with_suffix(".txt")
         para_pd.to_csv(out_file,header=False, sep= "\t")
 
+"""TRANSFORMATION OF PARALLEL DATA TO SFTTRAINER FORMAT"""
+def csvfiles_to_parrallel(csv_path,src_lang,target_lang):
+    df = pd.read_csv(csv_path, sep = "\t")
+    print(f"Succesfully read {csv_path}")
+    df = df[[src_lang,target_lang]]
+    df.to_csv(csv_path, index=False)
 
+def merge_txtfiles_corpus(src_lang,target_lang,src_lang_txt,target_lang_txt,target_csv):
+    src_txts = [line.strip() for line in open(src_lang_txt, "r", encoding="utf-8")]
+    target_txts = [line.strip() for line in open(target_lang_txt, "r", encoding="utf-8")]
+    
+    assert len(src_txts) == len(target_txts), "disconcordant corpus"
+    len_corpus = len(src_txts)
+    parrallel_pairs = list(zip(src_txts,target_txts))
+    df = pd.DataFrame(parrallel_pairs,columns=[src_lang,target_lang])
+    if not df.empty:
+        df.to_csv(target_csv,index = False)
+        print(f"successfully processed {len_corpus} into {target_csv}")
+    else:
+        print(f"The dataframe is empty")
+
+def txtfiles_to_corpus(file_path,output_csv):
+    igbo_lines = [
+        line.replace("Igbo:", "", 1).strip()
+        for line in open(file_path, "r", encoding="utf-8")
+        if line.startswith("Igbo:")
+    ]
+    english_lines = [
+        line.replace("Eng:", "", 1).strip()
+        for line in open(file_path, "r", encoding="utf-8")
+        if line.startswith("Eng:")
+    ]
+
+    assert len(igbo_lines) == len(english_lines), f"Mismatch between Igbo and English lines! in {file_path}\n There are {len(igbo_lines)} igbo lines and {len(english_lines)} english lines"
+
+    df = pd.DataFrame({
+        "Igbo": igbo_lines,
+        "English": english_lines
+    })
+
+    
+    df.to_csv(output_csv, index=False, encoding="utf-8")
+    print(f"✅ Saved {len(df)} translation pairs to {output_csv}")
+
+merge_parameters = [
+    ("data/parrallel_text/Yor_en_corpus/jw300.yo.txt", "data/parrallel_text/Yor_en_corpus/jw300.en.txt", "data/parrallel_text/Yor_en_corpus/csv_formatted/jw300_yo_en.csv")
+]
+txt_to_corp_parameters = [
+    ("data/parrallel_text/igbo_en_corpus/gpt3.5_ted_talk_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt3.5_ted_talk_igbo.csv"),
+    ("data/parrallel_text/igbo_en_corpus/gpt4_bbc_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_bbc_igbo.csv"),
+    ("data/parrallel_text/igbo_en_corpus/gpt4_igbo.gov.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_igbo.gov.csv"),
+    ("data/parrallel_text/igbo_en_corpus/gpt4_ted_talk_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_ted_talk_igbo.csv")
+]
 
