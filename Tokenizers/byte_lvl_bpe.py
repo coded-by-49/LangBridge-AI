@@ -27,41 +27,33 @@ class RegrexBpeTokenizer:
     def train(self, list_of_text, batch_size):
         start = 0
         end = batch_size
-        while start <= 34350000:
-            text= " ".join(list_of_text[start:end])
-            text_chunks = re.findall(self.compiled_pattern, text)
-            ids = [list(word.encode("utf-8")) for word in text_chunks]
-            current_ids = ids # copying out ids
-            idx = 256
-            num_merges = self.vocab_size - idx
-            for i in range(num_merges):
-                stats = Counter()
-                # look through each pair and return the one with the highest frequency
-                for chunk_ids in current_ids:
-                    self.get_stats(chunk_ids, stats) 
+        text= " ".join(list_of_text[start:end])
+        text_chunks = re.findall(self.compiled_pattern, text)
+        ids = [list(word.encode("utf-8")) for word in text_chunks]
+        current_ids = ids # copying out ids
+        idx = 256
+        num_merges = self.vocab_size - idx
+        for i in range(num_merges):
+            stats = Counter()
+            # look through each pair and return the one with the highest frequency
+            for chunk_ids in current_ids:
+                self.get_stats(chunk_ids, stats) 
 
-                if stats:
-                    top_pair = max(stats, key=stats.get)
-                else:
-                    print("No more pairs to merge. Stopping training.")
-                    break
-                new_idx = idx+i
-                current_ids = [self.merge(top_pair,new_idx,chunk_ids) for chunk_ids in current_ids]  # update the token_ids with the new found pairs
-                self.merges[top_pair] = new_idx
-                self.vocab[new_idx] = self.vocab[top_pair[0]] + self.vocab[top_pair[1]]
-            end += batch_size
-            start += batch_size
+            if stats:
+                top_pair = max(stats, key=stats.get)
+            else:
+                print("No more pairs to merge. Stopping training.")
+                break
+            new_idx = idx+i
+            current_ids = [self.merge(top_pair,new_idx,chunk_ids) for chunk_ids in current_ids]  # update the token_ids with the new found pairs
+            self.merges[top_pair] = new_idx
+            self.vocab[new_idx] = self.vocab[top_pair[0]] + self.vocab[top_pair[1]]
         return self.vocab,self.merges
         
-
     def register_special_tokens(self, special_tokens):
         self.special_tokens = special_tokens  #for encoding 
         self.inverse_special_tokens = {v: k for k, v in special_tokens.items()} # for decoding 
     
-
-
-
-
     def merge(self,top_pair, idx,ids):
         newids = []
         i = 0

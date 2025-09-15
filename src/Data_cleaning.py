@@ -7,6 +7,10 @@ import pickle
 import csv
 from glob import glob
 from pathlib import Path
+import json
+import re
+from datasets import load_dataset
+import csv
 
 def is_allowed_block(char) -> bool: 
     """Detection of non-nigerian-lingual-unicode characters"""
@@ -214,6 +218,7 @@ def convert_to_csv(clean_en_file,clean_lang_file,lang_name,output_csv,batch_size
             print(f"Error reading final CSV for verification: {e}")
    
 
+
 """CONVERSION OF RAW CSV TO TEXT FILES"""
 def convert_tsv_to_txt(file_paths):
     for file_path in file_paths:
@@ -251,10 +256,32 @@ def hypafleurs_load_parquet(lang_file, eng_file, lang_name, output_csv):
     
     print(f"Saved {len(df_lang_with_eng)} {lang_name}-English pairs to {output_csv}")
 
-df = pd.read_parquet("data/parrallel_text/hausa_en_corpus/unprocessed_file/hau1.parquet")
-# print(df.head)
-df.to_csv("data/parrallel_text/igbo_en_corpus/csv_formatted/igbo_par.csv", index=False, encoding="utf-8")
 
+
+def masakane(docname,output_ha_csv,oupput_yo_csv):
+    dataset = load_dataset("masakhane/AfriDocMT", docname , split="train")
+    # Convert to pandas DataFrame and select only 'en' and 'ha' columns
+    df_ha = dataset.to_pandas()[["ha", "en"]]
+    df_yo = dataset.to_pandas()[["yo","en"]]
+
+    df_ha.to_csv(output_ha_csv, index=False)
+    df_yo.to_csv(oupput_yo_csv, index =False)
+
+    print(df_ha.head())
+    print(df_yo.head())
+    
+masakane_parameters = [
+    ("doc_health","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha1.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo1.csv"),
+    ("doc_health_10","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha2.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo2.csv"),
+    ("doc_health_25","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha3.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo3.csv"),
+    ("doc_health_5","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha4.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo4.csv"),
+    ("doc_tech","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha5.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo5.csv"),
+    ("doc_tech_10","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha6.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo6.csv"),
+    ("doc_tech_25","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha7.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo7.csv"),
+    ("doc_tech_5","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha8.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo8.csv"),
+    ("health","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha9.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo9.csv"),
+    ("tech","data/parrallel_text/hausa_en_corpus/csv_formatted/afridocmt_en_ha10.csv","data/parrallel_text/Yor_en_corpus/csv_formatted/afridocmt_en_yo10.csv")
+]
 
 """EXTRACTION OF DATA EAF AND EAFL FILES"""
 def extract_annotations(eaf_l_file_paths, destination_file_path):
@@ -382,10 +409,127 @@ def txtfiles_to_corpus(file_path,output_csv):
 merge_parameters = [
     ("data/parrallel_text/Yor_en_corpus/jw300.yo.txt", "data/parrallel_text/Yor_en_corpus/jw300.en.txt", "data/parrallel_text/Yor_en_corpus/csv_formatted/jw300_yo_en.csv")
 ]
-txt_to_corp_parameters = [
-    ("data/parrallel_text/igbo_en_corpus/gpt3.5_ted_talk_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt3.5_ted_talk_igbo.csv"),
-    ("data/parrallel_text/igbo_en_corpus/gpt4_bbc_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_bbc_igbo.csv"),
-    ("data/parrallel_text/igbo_en_corpus/gpt4_igbo.gov.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_igbo.gov.csv"),
-    ("data/parrallel_text/igbo_en_corpus/gpt4_ted_talk_igbo.txt","data/parrallel_text/igbo_en_corpus/csv_formatted/gpt4_ted_talk_igbo.csv")
-]
 
+
+def SFT_formatter(csv_file_path):
+    jsonl_file_path = 'data/SFT_formatted_data/SFTTrainer.jsonl'
+    try:
+        with open(csv_file_path, mode='r', encoding='utf-8') as csv_file, \
+            open(jsonl_file_path, mode='a', encoding='utf-8') as jsonl_file:
+
+            csv_reader = csv.DictReader(csv_file)
+            # Iterate over each row in the CSV
+            lines_processed = 0
+            for row in csv_reader:
+                lines_processed += 1
+                combined = {
+                    "text": f"Hausa: {row['Hausa']} English: {row['English']}"
+                }
+                jsonl_file.write(json.dumps(combined, ensure_ascii=False) + '\n')
+
+        print(f"Successfully processed {lines_processed} and converted {csv_file_path} to {jsonl_file_path}")
+
+    except FileNotFoundError:
+        print(f"Error: The file {csv_file_path} was not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}  \n file path : {csv_file_path}")
+
+def transform_dataset_to_nllb(input_path, output_path, erronous_file_path):
+    """
+    Reads a dataset from an input file, transforms it to the NLLB
+    format, and saves it to an output file.
+
+    Args:
+        input_path (str): The path to the original dataset file.
+        output_path (str): The path where the transformed data will be saved.
+    """
+    # Mapping of language names to their official NLLB codes
+    lang_code_map = {
+        "Hausa": "hau_Latn",
+        "Yoruba": "yor_Latn",
+        "Igbo": "ibo_Latn"
+        # Add other language mappings here if needed
+    }
+
+    print(f"Starting transformation from {input_path}...")
+
+    try:
+        # Open the output file to write the transformed data
+        with open(output_path, 'w', encoding='utf-8') as outfile:
+            # Open the input file to read the original data
+            with open(input_path, 'r', encoding='utf-8') as infile:
+                for line in infile:
+                    # Load the JSON object from the line
+                    data = json.loads(line)
+                    full_text = data['text']
+
+                    # 1. Split text into source part and English part
+                    parts = full_text.split(' English: ')
+                    if len(parts) != 2:
+                        print(f"Skipping malformed line: {line.strip()}, unable to split into source and english path")
+                        with open(erronous_file_path, "w", encoding="utf-8") as f:
+                            json.dump(line, f, indent=4)
+                        continue
+                    
+                    source_part, english_text = parts
+                    english_text = english_text.strip().strip("'\"")
+
+                    # 2. Split source part into language and source text
+                    lang_parts = source_part.split(': ', 1)
+                    if len(lang_parts) != 2:
+                        print(f"Skipping malformed line: {line.strip()} unable to split language name and its text")
+                        with open(erronous_file_path, "w", encoding="utf-8") as f:
+                            json.dump(line, f, indent=4)
+                        continue
+
+                    language_name, source_text = lang_parts
+                    language_name = language_name.strip()
+                    source_text = source_text.strip().strip("'\"")
+
+                    # 3. Look up the language code
+                    source_lang_code = lang_code_map.get(language_name)
+                    if not source_lang_code:
+                        print(f"Skipping line with unknown language: {language_name}")
+                        with open(erronous_file_path, "w", encoding="utf-8") as f:
+                            json.dump(line, f, indent=4)
+                        continue
+                        
+                    # 4. Construct the final nested dictionary
+                    nllb_entry = {
+                        "translation": {
+                            source_lang_code: source_text,
+                            "eng_Latn": english_text
+                        }
+                    }
+
+                    # 5. Write the transformed entry to the output file
+                    outfile.write(json.dumps(nllb_entry) + '\n')
+
+        print(f"Transformation complete! New dataset saved to {output_path}")
+
+    except FileNotFoundError:
+        print(f"Error: The file '{input_path}' was not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+unformatted_data_path = "data/SFT_formatted_data/final_lang_corpus.jsonl"
+
+formatted_data_path = "data/SFT_formatted_data/final_lang_corpus_formatted.jsonl"
+
+erronous_file_path = "data/SFT_formatted_data/erronous_lines.jsonl"
+
+input_file = "data/SFT_formatted_data/final_lang_corpus_formatted.jsonl"      # your big file (5M+ lines)
+output_file = "data/SFT_formatted_data/unduplicate_corpus.jsonl"
+
+unique_lines = set()
+
+with open(input_file, "r", encoding="utf-8") as infile:
+    for line in infile:
+        line = line.rstrip("\n")  # remove trailing newline
+        unique_lines.add(line)
+
+with open(output_file, "w", encoding="utf-8") as outfile:
+    for line in unique_lines:
+        outfile.write(line + "\n")
+
+print(f"Deduplication done. {len(unique_lines)} unique lines saved to {output_file}")
