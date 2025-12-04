@@ -1,112 +1,116 @@
-# LangBridge AI MVP
+LangBridge AI: High-Performance NMT for Nigerian Languages
 
-This repository contains the development environment, datasets, and code for the LangBridge AI MVP, a project aimed at building a multilingual neural machine translation (NMT) model for Nigerian languages (Hausa, Igbo, Yoruba) paired with English. The project leverages parallel corpora and modern NLP tools to preprocess, train, and evaluate the model.
+🌍 Overview
 
-## Project Overview
-- **Start Date**: July 19, 2025
-- **Objective**: Develop a multilingual NMT model to translate between Hausa, Igbo, Yoruba, and English, focusing on low-resource language challenges.
-- **Tools**: Python, PyTorch, CUDA, HuggingFace (transformers, tokenizers), scikit-learn, pyarrow
-- **Environment**: Windows Subsystem for Linux (WSL) with NVIDIA GPU (RTX 3060 Laptop GPU)
-- **Datasets**: Flores200, JW300, Opus (CCMatrix, Wikititles, XLEnt), Tatoeba, Hypa_Fleurs
+LangBridge AI is a specialized Neural Machine Translation (NMT) project designed to bridge the communication gap for the three major Nigerian languages: Hausa, Igbo, and Yoruba (Wazobia), paired with English.
 
-## Progress Updates
-- **Week 1 (July 19–21, 2025)**:
-  - Set up development environment: Installed Python, PyTorch, CUDA, HuggingFace libraries, and scikit-learn.
-  - Created GitHub repository and initial `README.md`.
-  - Downloaded datasets (JW300, Tatoeba, Flores200, Opus, Hypa_Fleurs) and organized in `data/` directory.
-  - Configured WSL environment for GPU support.
-- **Week 2 (July 23–28, 2025)**:
-  - Converted Flores200 Parquet/FLAC files to CSVs (e.g., `data/Flores200/ha_en_dev.csv`) using `pyarrow` and `pandas`.
-  - Processed JW300 XML files, switching to line-aligned `.txt` files (e.g., `jw300.ig.txt`, `jw300.en.txt`) for Igbo-English pairs, saved as `data/JW300/ig_en.csv`.
-  - Cleaned large Opus CCMatrix Hausa-English files (5.8M lines) into `data/Opus/Preprocessed_csv/Hausa/CCMatrix_ha_en.csv`, addressing 78 malformed lines, header swaps, and non-printable characters (e.g., £, €).
-  - Investigated slow processing of Wikititles dataset due to encoding issues; diagnostics ongoing.
-  - Filtered non-Latin characters (e.g., `ﾒｷ`) in Igbo XLEnt dataset using `unicodedata`, preserving Nigerian Latin characters (e.g., `ẹ`, `ọ`).
-- **Week 3 (July 30–August 1, 2025)**:
-  - Completed cleaning of all datasets (Flores200, JW300, Opus, Tatoeba, Hypa_Fleurs).
-  - Began preprocessing phase: Tokenized QED Igbo-English dataset (`data/Opus/Preprocessed_csv/Igbo/QED_ig_en.csv`) using HuggingFace `tokenizers` with BPE, producing `source_tokens_s1.pt` and `target_tokens_s1.pt`.
-  - Configured PyTorch to default to CUDA on NVIDIA RTX 3060 Laptop GPU, optimizing tensor operations.
-  - Identified small vocabulary size (621 tokens) for QED dataset, planning to combine with larger datasets (e.g., JW300) to improve vocabulary coverage.
+While general-purpose models often underperform on low-resource African languages due to data scarcity, LangBridge AI mitigates this by leveraging a massively curated dataset of over 4 million high-quality sentence pairs and fine-tuning Meta's state-of-the-art NLLB-200 model using Low-Rank Adaptation (LoRA).
 
-## Folder Structure
-```
-LANGBRIDG_AI/
-├── .vscode/
-├── data/
-│   ├── Flores200/
-│   │   ├── ha_en_dev.csv
-│   │   ├── ig_en_dev.csv
-│   │   └── yo_en_dev.csv
-│   ├── Hypa_fleurs/
-│   │   ├── ha_en.csv (pending)
-│   │   ├── ig_en.csv (pending)
-│   │   └── yo_en.csv (pending)
-│   ├── JW300/
-│   │   ├── ig_en.csv
-│   │   ├── jw300.ig.txt
-│   │   └── jw300.en.txt
-│   ├── Opus/
-│   │   ├── Hausa/
-│   │   │   ├── clean_files/
-│   │   │   │   ├── en-ha.txt(1)
-│   │   │   │   ├── en-ha.txt(2)
-│   │   │   │   └── en-hau.txt(3)
-│   │   │   └── unclean_files/
-│   │   ├── Igbo/
-│   │   │   ├── clean_files/
-│   │   │   │   ├── en-ig.txt(4) to en-ig.txt(15)
-│   │   │   │   └── QED_ig_en.csv
-│   │   │   └── unclean_files/
-│   │   ├── Yoruba/
-│   │   │   ├── en-yo.txt(1) to en-yo.txt(14)
-│   │   └── Preprocessed_csv/
-│   │       ├── Hausa/
-│   │       │   ├── CCMatrix_ha_en.csv
-│   │       ├── Igbo/
-│   │       │   ├── QED_ig_en.csv
-│   │       └── Yoruba/
-│   ├── Tatoeba/
-│   │   ├── hau_sentences.tsv
-│   │   ├── ibo_sentences.tsv
-│   │   ├── yor_sentences.tsv
-│   │   ├── links/
-│   │   └── ha_en.csv
-│   ├── Tokenised_Data/
-│   │   ├── Igbo/
-│   │       ├── source_tokens_s1.pt
-│   │       ├── target_tokens_s1.pt
-├── tokenizers/
-│   ├── tokenizer_igbo_en.json
-```
+🚀 Key Features
 
-## Challenges and Solutions
-- **Data Cleaning**:
-  - **Challenge**: Non-printable characters (e.g., £, €) and non-Latin scripts (e.g., `ﾒｷ`) in Opus and Igbo datasets.
-  - **Solution**: Added UTF-8 BOM, used `unicodedata.block()` to filter non-Latin scripts while preserving Nigerian Latin characters (e.g., `ẹ`, `ọ`).
-- **Large File Processing**:
-  - **Challenge**: Slow processing of Opus CCMatrix (957 MB) and Wikititles due to encoding issues.
-  - **Solution**: Implemented chunked reading with `zip_longest`, binary mode (`"rb"`), and `errors="replace"`.
-- **Small Vocabulary Size**:
-  - **Challenge**: QED Igbo-English dataset produced a 621-token vocabulary, potentially limiting model performance.
-  - **Solution**: Plan to combine with larger datasets (e.g., JW300) and adjust `vocab_size` if needed.
+Massive Scale: Trained on 4M+ cleaned and tokenized parallel sentences.
 
-## Next Steps
-- Preprocess remaining datasets (Flores200, JW300, Opus, Tatoeba, Hypa_Fleurs) for tokenization.
-- Split tokenized data into train/validation sets using `scikit-learn`.
-- Train NMT model using PyTorch and HuggingFace transformers.
-- Optimize processing for Wikititles dataset based on encoding diagnostics.
+Efficient Architecture: Fine-tuned nllb-200-distilled-600M using QLoRA (4-bit quantization) for optimal performance-to-resource ratio.
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/LangBridge_AI.git
-   ```
-2. Install dependencies in a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   pip install torch tokenizers pandas scikit-learn pyarrow
-   ```
-3. Set up WSL with CUDA for GPU support (see NVIDIA documentation).
+Multi-Domain Coverage: Data sourced from religious texts, news, web scrapes, and conversational corpora.
 
-## Contact
-For questions or contributions, open an issue or contact the project maintainer.
+📊 The Dataset: LangBridge Wazobia
+
+The foundation of this model is the custom-built LangBridge Wazobia Dataset. Creating this dataset involved a rigorous pipeline of data mining, cleaning, and formatting.
+
+Sources include:
+
+FLORES-200: High-quality benchmark data.
+
+JW300: Extensive parallel religious texts.
+
+OPUS Corpus: Including CCMatrix, Wikititles, and XLEnt.
+
+Tatoeba: Community-sourced translation pairs.
+
+Hypa_Fleurs: Multi-reference datasets.
+
+Custom Web Scraping: Targeted extraction from localized Nigerian web content.
+
+Preprocessing Pipeline:
+
+Deduplication: Removal of overlapping entries across sources.
+
+Cleaning: Regex-based filtering to remove non-text artifacts and noise.
+
+Tokenization: Processed using the NLLB tokenizer (SentencePiece) for immediate transformer usage.
+
+👉 Access the Dataset on Hugging Face
+
+🛠️ Model Architecture & Training
+
+Base Model: facebook/nllb-200-distilled-600M
+
+Fine-Tuning Method: LoRA (Low-Rank Adaptation)
+
+Rank: 32
+
+Alpha: 64
+
+Target Modules: q_proj, v_proj, k_proj, out_proj, fc1, fc2
+
+Quantization: 4-bit NormalFloat (NF4) via bitsandbytes to reduce memory footprint while maintaining precision.
+
+Infrastructure: Trained on NVIDIA Tesla T4 GPUs.
+
+💻 Usage
+
+To use the model for inference, you need to load the base NLLB model and attach the LangBridge adapters.
+
+import torch
+from peft import PeftModel, PeftConfig
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+# 1. Setup Configuration
+base_model_id = "facebook/nllb-200-distilled-600M"
+adapter_model_id = "coded-by-49/Lang_bridge_AI"
+
+# 2. Load Tokenizer & Base Model
+tokenizer = AutoTokenizer.from_pretrained(base_model_id)
+model = AutoModelForSeq2SeqLM.from_pretrained(
+    base_model_id,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# 3. Load LangBridge Adapters
+model = PeftModel.from_pretrained(model, adapter_model_id)
+model.eval()
+
+# 4. Inference Function
+def translate(text, src_lang, tgt_lang):
+    tokenizer.src_lang = src_lang
+    inputs = tokenizer(text, return_tensors="pt").to(model.device)
+    
+    # NLLB Language Codes: 
+    # Igbo: "ibo_Latn", Hausa: "hau_Latn", Yoruba: "yor_Latn", English: "eng_Latn"
+    forced_bos_token_id = tokenizer.lang_code_to_id[tgt_lang]
+    
+    generated_tokens = model.generate(
+        **inputs, 
+        forced_bos_token_id=forced_bos_token_id, 
+        max_new_tokens=100
+    )
+    return tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)[0]
+
+# Example: Translate English to Igbo
+print(translate("How are you doing today?", "eng_Latn", "ibo_Latn"))
+# Output: Kedu ka ị na-eme taa?
+
+
+📈 Evaluation
+
+The model was evaluated using SacreBLEU scores to ensure translation accuracy and fluency across all three language pairs.
+
+📜 License
+
+This project is open-source and available under the Apache 2.0 License.
+
+🤝 Acknowledgements
+
+Special thanks to the open-source community, specifically the creators of the FLORES-200 and OPUS projects, which made the data collection for this low-resource task possible.
