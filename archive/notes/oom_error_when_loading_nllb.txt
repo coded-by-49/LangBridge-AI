@@ -1,0 +1,40 @@
+Out-of-Memory (OOM) Error When Loading NLLB-200 Model on Single GPU
+Problem Name:
+Out-of-Memory (OOM) Error When Loading NLLB-200 Model on Single GPU
+
+Description:
+Occurs when loading a large seq2seq model (e.g., facebook/nllb-200-distilled-600M)
+onto a single GPU using .to(device) or device="cuda". The entire model is allocated
+to one device, exceeding its available VRAM.
+
+Symptoms:
+- CUDA Out of Memory error during model loading or first forward pass
+- Training/evaluation crashes before any data is processed
+- Single GPU VRAM maxed out immediately after model load
+
+Root Cause:
+.to("cuda") places all 600M+ parameters on a single GPU. With 4-bit quantization,
+each layer is smaller but the full model still exceeds single-device VRAM capacity
+(e.g., 16GB on Tesla T4). No distribution mechanism is invoked — one device carries
+the entire memory burden.
+
+Solution:
+Replace:
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint).to("cuda")
+
+With:
+    model = AutoModelForSeq2SeqLM.from_pretrained(
+        model_checkpoint,
+        device_map="balanced"
+    )
+
+This hands control to HuggingFace Accelerate, which inspects available GPUs and
+distributes model layers evenly across them so no single device is overloaded.
+
+Prevention / Best Practices:
+- Always use device_map="balanced" (or "auto") when loading models >1B params
+  or when VRAM per GPU is limited
+- Combine with 4-bit NF4 quantization (bitsandbytes) for maximum memory efficiency
+- For final benchmark reporting, re-run evaluation in float16 without quantization
+  to get full-precision scores — quantization can cost 1–2 BLEU points
+- Check available VRAM per device before loading: nvidia-smi

@@ -1,0 +1,91 @@
+Errors In The Langbridge Evaluation process
+Out-of-Memory (OOM) Error When Loading NLLB-200 Model on Single GPU
+Problem Name:
+Out-of-Memory (OOM) Error When Loading NLLB-200 Model on Single GPU
+
+Description:
+Occurs when loading a large seq2seq model (e.g., facebook/nllb-200-distilled-600M)
+onto a single GPU using .to(device) or device="cuda". The entire model is allocated
+to one device, exceeding its available VRAM.
+
+Symptoms:
+- CUDA Out of Memory error during model loading or first forward pass
+- Training/evaluation crashes before any data is processed
+- Single GPU VRAM maxed out immediately after model load
+
+Root Cause:
+.to("cuda") places all 600M+ parameters on a single GPU. With 4-bit quantization,
+each layer is smaller but the full model still exceeds single-device VRAM capacity
+(e.g., 16GB on Tesla T4). No distribution mechanism is invoked — one device carries
+the entire memory burden.
+
+Solution:
+Replace:
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint).to("cuda")
+
+With:
+    model = AutoModelForSeq2SeqLM.from_pretrained(
+        model_checkpoint,
+        device_map="balanced"
+    )
+
+This hands control to HuggingFace Accelerate, which inspects available GPUs and
+distributes model layers evenly across them so no single device is overloaded.
+
+Prevention / Best Practices:
+- Always use device_map="balanced" (or "auto") when loading models >1B params
+  or when VRAM per GPU is limited
+- Combine with 4-bit NF4 quantization (bitsandbytes) for maximum memory efficiency
+- For final benchmark reporting, re-run evaluation in float16 without quantization
+  to get full-precision scores — quantization can cost 1–2 BLEU points
+- Check available VRAM per device before loading: nvidia-smi
+
+
+:
+Repetition Loop in Seq2Seq Generation Output
+
+Description:
+Occurs during inference with seq2seq models (e.g., NLLB-200) when the model enters
+a degenerate generation state, repeatedly producing the same token sequence until
+max_new_tokens is reached.
+
+Symptoms:
+- Generated tensor contains a clearly repeating token pattern before the EOS token
+- Decoded output is a sentence fragment repeated many times
+- BLEU score for the affected sentence collapses to near zero
+- Higher order n-gram (2,3,4-gram) precision scores are disproportionately affected
+
+Root Cause:
+The model's beam search or greedy decoding gets stuck in a high-probability loop.
+Without a repetition penalty, nothing in the decoding process penalizes revisiting
+token sequences that have already been generated. The model keeps selecting the same
+next token because it is always the highest probability choice given the looping context.
+
+Solution:
+Add no_repeat_ngram_size to model.generate():
+
+    generated_tokens = model.generate(
+        **inputs,
+        forced_bos_token_id=forced_bos_token_id,
+        max_new_tokens=100,
+        no_repeat_ngram_size=3
+    )
+
+A value of 3 means: if any 3-token sequence has already appeared in the output,
+it is banned from being generated again. This breaks the loop at the decoding level
+without retraining.
+
+Prevention / Best Practices:
+- Always set no_repeat_ngram_size=3 or higher as a default in generation configs
+- Inspect decoded outputs visually before running corpus-level BLEU — repetition
+  loops are immediately visible and will silently corrupt your scores
+- If repetition persists, combine with repetition_penalty=1.3 in model.generate()
+- Scan your generated tensors for repeating token pattern blocks before decoding
+
+
+
+When turning text into a tokenized dataset 
+it is important to note that including the:
+padding and return tensors = "pt" into the tokenizer function that is going to transform the text is very important because tensors allow you to derive lengths easily and you would be able to do this from your dataset function:
+    def __len__(self):
+        return self.len(encodings)
