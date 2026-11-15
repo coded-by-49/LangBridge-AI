@@ -1,0 +1,31 @@
+[project]
+name = "langbridge-ai"
+version = "1.0.0"
+description = "LangBridge AI Igbo 1.0: an English -> Igbo QLoRA adapter for NLLB-200-distilled-1.3B"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.13"
+dependencies = [
+    "datasets>=5.0.0",
+    # CPU inference (src/langbridge/inference.py). No bitsandbytes needed.
+    "torch>=2.4",
+    "transformers>=4.46",
+    "peft>=0.13",
+    "sentencepiece>=0.2",
+    "safetensors>=0.4",
+    # Results charts (scripts/plot_results.py)
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+# GPU training on Kaggle (src/langbridge/train.py). bitsandbytes needs CUDA.
+train = [
+    "accelerate>=1.0",
+    "bitsandbytes>=0.46.1",
+    "kagglehub>=0.3",
+    "torch-lr-finder>=0.2",
+]
+
+[tool.uv]
+package = false
