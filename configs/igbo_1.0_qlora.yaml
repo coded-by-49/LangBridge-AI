@@ -1,0 +1,80 @@
+# LangBridge AI Igbo 1.0 (internal: v3): training settings, for reference.
+#
+# Copied by hand from src/langbridge/train.py. The training script does NOT
+# read this file; if the two ever differ, train.py is what was run.
+# Notes marked "guess" are not documented in the code or notebooks.
+
+model:
+  base_model: facebook/nllb-200-distilled-1.3B
+  adapter_repo: coded-by-49/LANGBRIDGE_AI_IGBO_1.0
+  tie_word_embeddings: false        # set on the model config before loading
+  source_lang: eng_Latn
+  target_lang: ibo_Latn
+  max_length: 256                   # source and target truncated to 256 tokens
+  truncation_side: right
+
+quantization:                       # bitsandbytes 4-bit loading (QLoRA)
+  load_in_4bit: true
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+  bnb_4bit_compute_dtype: float32
+
+lora:
+  target_modules: all-linear        # resolves to q/k/v/out_proj, fc1, fc2 (adapter_config.json)
+  r: 32
+  lora_alpha: 32
+  use_rslora: true                  # scaling = alpha / sqrt(r)
+  lora_dropout: 0.05
+  bias: lora_only
+  task_type: SEQ_2_SEQ_LM
+  prepare_model_for_kbit_training: true
+
+data:
+  dataset: coded-by-49/langbridge_ai_v3_igbo_datasets
+  train_split: train                                       # 12,009 pairs
+  validation_file: igbo_eng_lv1_validation_256_filtered.jsonl  # 589 pairs
+  direction: en->ig                                        # English source, Igbo target only
+
+training:                           # Seq2SeqTrainingArguments
+  hardware: 2x NVIDIA Tesla T4 (Kaggle), accelerate launch --num_processes 2
+  per_device_train_batch_size: 3
+  gradient_accumulation_steps: 4
+  effective_batch_size: 24          # 3 x 4 x 2 GPUs
+  num_train_epochs: 9.4             # upper bound; early stopping can end sooner
+  total_planned_steps: 4710         # printed by the trainer: 0/4710
+  eval_strategy: steps
+  eval_steps: 167
+  save_strategy: steps
+  save_steps: 167
+  save_total_limit: null
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  early_stopping_patience: 12       # EarlyStoppingCallback; HF card says 7, project brief said 2
+  label_smoothing_factor: 0.1
+  fp16: true
+  bf16: false
+  max_grad_norm: 1.0
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs: {use_reentrant: false}
+  ddp_find_unused_parameters: false
+  logging_steps: 3
+  report_to: none
+
+optimizer:
+  name: AdamW (torch.optim)
+  lr: 2.0e-5
+  weight_decay: 0.01
+
+scheduler:
+  name: CyclicLR (torch.optim.lr_scheduler)
+  mode: triangular
+  base_lr: 2.0e-5
+  max_lr: 3.3e-4                    # chosen from the LR range test (notebooks/01)
+  step_size_up: 1002                # = 2 epochs of optimizer steps (about 501 steps per epoch)
+  cycle_momentum: false
+
+released_checkpoint:
+  epoch: 1.333666
+  global_step: 668                  # derived: 4th eval/save point (4 x 167); see docs/training.md
+  selection: lowest eval_loss (load_best_model_at_end)
