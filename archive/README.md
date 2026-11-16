@@ -14,7 +14,7 @@ These files were moved with `git mv`, so their history is kept. The dataset they
 
 **`v3_kaggle_export/lb_train_script_main.ipynb`**: the raw Kaggle export of the Igbo 1.0 training script. It is a notebook JSON that was saved with a `.py` extension. Its code cell is now [`src/langbridge/train.py`](../src/langbridge/train.py).
 
-**`notes/`**: working notes. The problem/solution notes from training and evaluation are summarised in [docs/lessons_learned.md](../docs/lessons_learned.md):
+**`notes/`**: working notes. The problem/solution notes from training and evaluation are rewritten as entries in the [Engineering log](../docs/engineering_log.md):
 
 - `oom_error_when_loading_nllb.txt`
 - `repetition_loop_in_generation.txt`

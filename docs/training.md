@@ -189,7 +189,7 @@ The last saved run of notebook 02 (2026-11-05) **failed at step 0** with:
 ValueError: You cannot specify both decoder_input_ids and decoder_inputs_embeds at the same time
 ```
 
-It ran with transformers 5.16.1. The Igbo 1.0 adapter was uploaded on 2026-11-03, so this failed run is a later attempt, not the run that produced the model. The cause is not recorded. One option to test is pinning the transformers version used for the successful run (that version is not recorded either). See [lessons_learned.md](lessons_learned.md#6-failed-ddp-run-decoder_input_ids-and-decoder_inputs_embeds).
+It ran with transformers 5.16.1. The Igbo 1.0 adapter was uploaded on 2026-11-03, so this failed run is a later attempt, not the run that produced the model. The cause is not recorded. One option to test is pinning the transformers version used for the successful run (that version is not recorded either). See [LB-011](engineering_log.md#lb-011-second-training-attempt-crashed-at-step-0-with-a-decoder-input-conflict).
 
 ### Time and cost
 

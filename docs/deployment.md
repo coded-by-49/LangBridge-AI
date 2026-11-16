@@ -23,7 +23,7 @@ The plan is to serve the model from a free hosting tier with no GPU. That sets t
 5. **Converts** to **CTranslate2** with int8 quantization. CTranslate2 is a fast inference engine for transformer models on CPU, and int8 means 8-bit integer weights, about 4× smaller than float32. It writes `ct2_eng_ibo_int8/` for the Igbo model and `ct2_nllb_base_1.3b_int8/` for the base model used by the other directions.
 6. Imports `HfApi`, which suggests the bundles will be uploaded to Hugging Face. No upload cell exists yet.
 
-**Status of the last run:** steps 1–4 ran. Step 5 failed because the converter was given an old folder name (`merged-eng-ibo`). The second conversion line passes an undefined variable. The merge cell also refers to `base_model_id` while the variable is named `c`. See [lessons_learned.md](lessons_learned.md#11-ctranslate2-conversion-failed-in-the-bundling-notebook).
+**Status of the last run:** steps 1–4 ran. Step 5 failed because the converter was given an old folder name (`merged-eng-ibo`). The second conversion line passes an undefined variable. The merge cell also refers to `base_model_id` while the variable is named `c`. See [LB-024](engineering_log.md#lb-024-ctranslate2-conversion-failed-in-the-bundling-notebook).
 
 ## Routing plan
 

@@ -17,6 +17,7 @@ Names: **LangBridge v1** (archived, multilingual) and **LangBridge AI Igbo 1.0**
 | Key settings (saved notebook) | 4-bit NF4, double quant, compute dtype bfloat16. LoRA r=32, alpha=64, dropout 0.05, targets `q_proj, k_proj, v_proj, out_proj`, bias none. Batch 16 × accumulation 2, lr 2e-4, 1 epoch, eval/save every 500 steps with generation (max 60 tokens), fp16, single T4. Hub id `coded-by-49/Lang_bridge_AI` |
 | Results | See E2 |
 | Outcome | Adapter published (private now). Code: [`archive/v1/training/`](../archive/v1/training/lang_bridge_training_process.ipynb) |
+| Engineering log | See [LB-001](engineering_log.md#lb-001-v1-sample-translation-callback-has-a-typo-that-crashes-the-first-evaluation), [LB-002](engineering_log.md#lb-002-out-of-memory-error-when-loading-nllb-600m-on-one-gpu), [LB-003](engineering_log.md#lb-003-missing-src_lang-and-forced_bos_token_id-setup-in-v1), [LB-006](engineering_log.md#lb-006-long-kaggle-training-runs-failed-late) |
 
 Notes:
 
@@ -34,6 +35,7 @@ Notes:
 | Key settings | AfriCOMET `masakhane/africomet-mtl`. Beam 4, max 256 new tokens, `no_repeat_ngram_size=3`, `forced_bos_token_id` set, `src_lang` not set |
 | Results (Sentences 600–1600) | Igbo → English 0.3764 vs 0.4029 (−6.57%); Hausa → English 0.2804 vs 0.5205 (−46.13%); Yoruba → English 0.2285 vs TBD; English → Igbo 0.5637 vs 0.5985 (−5.80%); English → Hausa 0.6538 vs 0.6697 (−2.38%); English → Yoruba 0.4509 vs 0.4940 (−8.73%). Full table: [evaluation.md](evaluation.md#3-langbridge-v1-vs-nllb-200-distilled-600m-archived) |
 | Outcome | **v1 scored below its baseline in all six directions** (five with a known baseline; the Yoruba → English baseline is TBD). This led to the pivot |
+| Engineering log | See [LB-003](engineering_log.md#lb-003-missing-src_lang-and-forced_bos_token_id-setup-in-v1), [LB-004](engineering_log.md#lb-004-repetition-loops-in-seq2seq-generation), [LB-005](engineering_log.md#lb-005-errors-in-the-evaluation-process), [LB-007](engineering_log.md#lb-007-copy-paste-error-in-the-v1-results-sheet), [LB-008](engineering_log.md#lb-008-tokenizerlang_code_to_id-removed-in-newer-transformers) |
 
 What I learned:
 
@@ -75,6 +77,7 @@ What I learned:
 | Data | FLORES-101/200, Ezeani et al., MAFAND-MT → train 12,009 / validation 597 (589 filtered) / test 1,693 |
 | Key settings | English-side de-duplication across sources; 256-token validation filter |
 | Outcome | Published as `coded-by-49/langbridge_ai_v3_igbo_datasets`. A later audit (2026-11-15) found that 1,506 of 1,693 test rows also appear in train. See [data.md](data.md#splits) |
+| Engineering log | See [LB-012](engineering_log.md#lb-012-most-test-sentences-also-appear-in-the-training-split), [LB-013](engineering_log.md#lb-013-validation-and-test-sizes-swapped-on-the-hugging-face-cards) |
 
 ## E6: LR range test (Igbo 1.0)
 
@@ -87,6 +90,7 @@ What I learned:
 | Key settings | `torch-lr-finder`, 501 iterations, lr 1e-7 → 5 (exponential), batch 6 × 4 accumulation = 24, one T4, AdamW (weight decay 0.01) |
 | Results | Lowest loss 1.9904 at lr 5.14e-4. Loss 1.9937 near lr 3.36e-4. Loss NaN from lr ≈ 0.237. Tool suggestion 0.2287 (unusable). Runtime 9 h 45 min. Source: [`results/lr_range_test/result.json`](../results/lr_range_test/result.json) |
 | Outcome | Chose CyclicLR `base_lr=2e-5`, `max_lr=3.3e-4`. Lesson: read the curve; do not trust the automatic suggestion |
+| Engineering log | See [LB-010](engineering_log.md#lb-010-the-lr-finders-suggested-learning-rate-was-unusable), [LB-020](engineering_log.md#lb-020-data-collator-failed-on-leftover-text-columns-in-the-lr-range-test), [LB-021](engineering_log.md#lb-021-lr-finder-passed-the-input-dictionary-to-nllb-as-one-argument) |
 
 ## E7: LangBridge AI Igbo 1.0 training ("first main run")
 
@@ -99,6 +103,7 @@ What I learned:
 | Key settings | 4-bit NF4 QLoRA, rsLoRA r=32 alpha=32 dropout 0.05 all-linear. 2 × T4, batch 3 × 4 accumulation × 2 GPUs = 24. AdamW + CyclicLR (2e-5 → 3.3e-4, step_size_up 1002). Label smoothing 0.1. Eval/save every 167 steps, best by `eval_loss`, early stopping patience 12, up to 9.4 epochs. Details: [training.md](training.md) |
 | Results | Released checkpoint: epoch 1.333666 (= step 668, derived). Validation losses: TBD (logs not saved) |
 | Outcome | Adapter published as `coded-by-49/LANGBRIDGE_AI_IGBO_1.0` (2026-11-03) |
+| Engineering log | See [LB-009](engineering_log.md#lb-009-ddp-find_unused_parameters-warning-on-every-training-step), [LB-015](engineering_log.md#lb-015-tied-weight-conflict-between-transformers-versions-and-a-cublas-error), [LB-016](engineering_log.md#lb-016-gradient-checkpointing-warning-about-use_reentrant), [LB-017](engineering_log.md#lb-017-fp16-gradient-scaling-failed-on-bf16-gradients), [LB-018](engineering_log.md#lb-018-expected-float-got-half-with-an-fp16-model-and-fp16-compute), [LB-019](engineering_log.md#lb-019-out-of-memory-on-2-t4-at-512-tokens-with-fp32-activations), [LB-022](engineering_log.md#lb-022-target-padding-tokens-were-counted-in-the-training-loss) |
 
 ## E8: LangBridge AI Igbo 1.0 evaluation vs NLLB-1.3B
 
@@ -111,6 +116,7 @@ What I learned:
 | Key settings | Beam 4, max 256 new tokens, `no_repeat_ngram_size=3`, `forced_bos_token_id` from `convert_tokens_to_ids`; AfriCOMET `masakhane/africomet-mtl` |
 | Results | English → Igbo 0.6580 vs 0.6459 (+0.0122, +1.88%). Igbo → English 0.5741 vs 0.6440 (−0.0699, −10.86%). Source: [`results/igbo1_vs_nllb1.3b.csv`](../results/igbo1_vs_nllb1.3b.csv) |
 | Outcome | Small gain in the trained direction and a drop in the reverse direction → per-direction routing. **Caveat found later:** 88.95% of test rows are also in train, so the gain is not a clean held-out result. No significance test |
+| Engineering log | See [LB-005](engineering_log.md#lb-005-errors-in-the-evaluation-process), [LB-012](engineering_log.md#lb-012-most-test-sentences-also-appear-in-the-training-split), [LB-023](engineering_log.md#lb-023-igbo-10-is-worse-than-its-base-model-on-igbo-to-english) |
 
 ## E9: Second training attempt (failed)
 
@@ -120,7 +126,8 @@ What I learned:
 | Version | Igbo 1.0 setup |
 | Key settings | Same script; transformers 5.16.1, accelerate 1.15.0 |
 | Results | Crashed at step 0/4710: `ValueError: You cannot specify both decoder_input_ids and decoder_inputs_embeds at the same time` |
-| Outcome | Cause not recorded. See [lessons_learned.md](lessons_learned.md#6-failed-ddp-run-decoder_input_ids-and-decoder_inputs_embeds) |
+| Outcome | Cause not recorded |
+| Engineering log | See [LB-011](engineering_log.md#lb-011-second-training-attempt-crashed-at-step-0-with-a-decoder-input-conflict) |
 
 ## E10: Production bundling (in progress)
 
@@ -131,3 +138,4 @@ What I learned:
 | Key settings | CPU runtime (torch 2.11.0+cpu, transformers 5.20.2, peft 0.21.2, ctranslate2 4.9.0). Merge adapter into base → `merged_eng_igbo_v1`. Convert to CTranslate2 int8 (Igbo model and base model) |
 | Results | Merge cell ran. CTranslate2 conversion failed (wrong model path). See [deployment.md](deployment.md) |
 | Outcome | Not deployed yet |
+| Engineering log | See [LB-014](engineering_log.md#lb-014-hugging-face-token-hard-coded-in-the-bundling-notebook), [LB-024](engineering_log.md#lb-024-ctranslate2-conversion-failed-in-the-bundling-notebook) |

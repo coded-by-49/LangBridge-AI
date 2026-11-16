@@ -7,6 +7,7 @@ Dates come from git commits, Hugging Face commits and notebook outputs. See [doc
 - Reorganised the repository: `src/`, `notebooks/`, `scripts/`, `configs/`, `results/`, `docs/`, `archive/`.
 - Added results CSVs and charts, a split-overlap check, and detailed documentation.
 - Found that 1,506 of 1,693 test pairs (88.95%) also appear in the training split. Documented in [docs/evaluation.md](docs/evaluation.md).
+- Added [docs/engineering_log.md](docs/engineering_log.md) (renamed from `lessons_learned.md`): 24 bugs and findings in one standard format, including notes from the project's working notes.
 - Removed a hard-coded Hugging Face token from a notebook. Secrets, virtual environments, IDE files, weights and local data are git-ignored.
 
 ## LangBridge AI Igbo 1.0 (internal: v3): 2026-11-03
