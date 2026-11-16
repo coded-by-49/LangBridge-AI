@@ -1,0 +1,4 @@
+model,direction,range_start,range_end,n_sentences,metric,score,note
+LangBridge v1,Hausa -> English,0,1000,1000,AfriCOMET (masakhane/africomet-mtl),0.26233460288110655,Purpose not confirmed
+LangBridge v1,Yoruba -> English,0,1000,1000,AfriCOMET (masakhane/africomet-mtl),0.23646779036711085,Purpose not confirmed; score matches output of notebooks/04_evaluation_africomet.ipynb (file l1_yor_eng_comet_overfit_eval_data_0_1000.json)
+LangBridge v1,Igbo -> English,0,1000,1000,AfriCOMET (masakhane/africomet-mtl),0.36254247562456293,Purpose not confirmed

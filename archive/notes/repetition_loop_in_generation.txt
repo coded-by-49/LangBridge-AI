@@ -1,0 +1,40 @@
+Problem Name:
+Repetition Loop in Seq2Seq Generation Output
+
+Description:
+Occurs during inference with seq2seq models (e.g., NLLB-200) when the model enters
+a degenerate generation state, repeatedly producing the same token sequence until
+max_new_tokens is reached.
+
+Symptoms:
+- Generated tensor contains a clearly repeating token pattern before the EOS token
+- Decoded output is a sentence fragment repeated many times
+- BLEU score for the affected sentence collapses to near zero
+- Higher order n-gram (2,3,4-gram) precision scores are disproportionately affected
+
+Root Cause:
+The model's beam search or greedy decoding gets stuck in a high-probability loop.
+Without a repetition penalty, nothing in the decoding process penalizes revisiting
+token sequences that have already been generated. The model keeps selecting the same
+next token because it is always the highest probability choice given the looping context.
+
+Solution:
+Add no_repeat_ngram_size to model.generate():
+
+    generated_tokens = model.generate(
+        **inputs,
+        forced_bos_token_id=forced_bos_token_id,
+        max_new_tokens=100,
+        no_repeat_ngram_size=3
+    )
+
+A value of 3 means: if any 3-token sequence has already appeared in the output,
+it is banned from being generated again. This breaks the loop at the decoding level
+without retraining.
+
+Prevention / Best Practices:
+- Always set no_repeat_ngram_size=3 or higher as a default in generation configs
+- Inspect decoded outputs visually before running corpus-level BLEU — repetition
+  loops are immediately visible and will silently corrupt your scores
+- If repetition persists, combine with repetition_penalty=1.3 in model.generate()
+- Scan your generated tensors for repeating token pattern blocks before decoding

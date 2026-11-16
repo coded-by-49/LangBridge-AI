@@ -1,5 +1,8 @@
 data/Jw300/
-data/
+# v1 raw data folders (root only). data/README.md and data/samples/ are tracked.
+/data/*
+!/data/README.md
+!/data/samples/
 data/Opus/
 data/Tatoeba/
 data/Merged_data/
@@ -9,3 +12,52 @@ Tokenizers/special_token.txt/
 Tokenizers/Vocabularies/
 Tokenizers/test_text.txt/
 venv/
+# ---------------------------------------------------------------
+# Repo overhaul (Igbo 1.0): keep secrets, envs, IDE files, weights
+# and large data out of git.
+# ---------------------------------------------------------------
+
+# Secrets: never commit
+secrets.env
+**/secrets.env
+*.env
+.env*
+
+# Virtual environments (root and nested)
+.venv/
+**/.venv/
+venv/
+
+# IDE settings (root and nested)
+.idea/
+**/.idea/
+.vscode/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Local v3 data workspace (data lives on Hugging Face; has its own nested .git)
+langbridge_ai_v3_data/
+
+# Other people's papers: links are in docs/references.md
+research_paper/
+
+# Model weights, checkpoints and large data files
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.arrow
+*.parquet
+*.zip
+checkpoints/
+langbridge_ai_checkpoints/
+merged_*/
+ct2_*/
+outputs/
+wandb/
+
+# Local working notes that are not part of the repo
+TASK*.md

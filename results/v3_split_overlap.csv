@@ -1,0 +1,4 @@
+split,file,rows,rows_with_exact_pair_in_train,rows_with_same_english_in_train,rows_not_in_train,pct_exact_pair_in_train
+validation (full),igbo_eng_lv1_validation.jsonl,597,0,1,597,0.00
+"validation (256-token filtered, used in training)",igbo_eng_lv1_validation_256_filtered.jsonl,589,0,1,589,0.00
+test,igbo_eng_lv1_test_.jsonl,1693,1506,1508,187,88.95

@@ -1,0 +1,3 @@
+direction,baseline_model,baseline_score,finetuned_model,finetuned_score,absolute_change,relative_change_pct,metric,test_set,n_sentences,checkpoint_epoch,note
+English -> Igbo,NLLB-200-distilled-1.3B,0.645850,LangBridge AI Igbo 1.0,0.658012,0.012162,1.88,AfriCOMET (masakhane/africomet-mtl),coded-by-49/langbridge_ai_v3_igbo_datasets test split,1693,1.333666,1506 of 1693 test pairs also appear in the train split (see results/v3_split_overlap.csv)
+Igbo -> English,NLLB-200-distilled-1.3B,0.643982,LangBridge AI Igbo 1.0,0.574051,-0.069931,-10.86,AfriCOMET (masakhane/africomet-mtl),coded-by-49/langbridge_ai_v3_igbo_datasets test split,1693,1.333666,Reverse direction; adapter was trained on English -> Igbo only
