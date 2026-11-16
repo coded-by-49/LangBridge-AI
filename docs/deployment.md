@@ -2,7 +2,7 @@
 
 ## Current status: in progress, not live
 
-**LangBridge AI Igbo 1.0** (internal: v3) is **not deployed**. There is no public API or demo URL yet. The adapter is public on Hugging Face ([coded-by-49/LANGBRIDGE_AI_IGBO_1.0](https://huggingface.co/coded-by-49/LANGBRIDGE_AI_IGBO_1.0)) and can be run locally with [`src/langbridge/inference.py`](../src/langbridge/inference.py).
+**LangBridge AI Igbo 1.0** (internal: v3) is **not deployed**. There is no public API or demo URL yet. The adapter is public on Hugging Face ([coded-by-49/LANGBRIDGE_AI_IGBO_1.0](https://huggingface.co/coded-by-49/LANGBRIDGE_AI_IGBO_1.0)). A CPU-only inference script (`src/langbridge/inference.py`) is being written.
 
 ## Target: free, CPU-only hosting
 
@@ -46,11 +46,11 @@ Before promotion: the English → Igbo gain was measured on a test split that ov
 - [x] Adapter trained and published on Hugging Face (2026-11-03)
 - [x] Hugging Face model card written (updated 2026-11-12)
 - [x] Merge code written (notebook 05, steps 1–4)
-- [x] CPU-only inference script without bitsandbytes ([`src/langbridge/inference.py`](../src/langbridge/inference.py)). See the README for whether it was tested.
 - [x] Routing decided per direction
 
 **Left**
 
+- [ ] Write a CPU-only English → Igbo inference script without bitsandbytes (`src/langbridge/inference.py`)
 - [ ] Re-score English → Igbo on a test set with no training overlap (promotion gate)
 - [ ] Fix the CTranslate2 conversion in notebook 05 and record the int8 model sizes
 - [ ] Check that the int8 model's output matches the float32 model on a sample

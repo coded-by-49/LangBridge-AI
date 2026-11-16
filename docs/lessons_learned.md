@@ -22,7 +22,7 @@ The original working notes are kept in [`archive/notes/`](../archive/notes). Ent
 
 **Cause:** Beam search or greedy decoding can get stuck in a high-probability loop. Nothing in plain decoding penalises a phrase it has already produced.
 
-**Fix:** Add `no_repeat_ngram_size=3` to `generate()`, which bans any 3-token sequence from appearing twice. If loops remain, add `repetition_penalty≈1.3`. All later evaluations and `src/langbridge/inference.py` use `no_repeat_ngram_size=3`.
+**Fix:** Add `no_repeat_ngram_size=3` to `generate()`, which bans any 3-token sequence from appearing twice. If loops remain, add `repetition_penalty≈1.3`. All later evaluations use `no_repeat_ngram_size=3`.
 
 **What I learned:** Read a sample of raw outputs before computing any corpus-level score. Repetition is obvious by eye and silently corrupts averages.
 
@@ -46,7 +46,7 @@ The original working notes are kept in [`archive/notes/`](../archive/notes). Ent
 - The saved v1 inference notebook never sets `src_lang`, so Hausa, Igbo and Yoruba inputs get the default `eng_Latn` tag. That bug can only hurt the **into-English** directions, which are the directions where v1 lost the most (Hausa → English −46.13%). Whether the NLLB baseline was scored with the same bug is unknown, so this is a **likely contributor, not a confirmed cause**.
 - The old README used `tokenizer.lang_code_to_id[...]`, which newer transformers versions removed.
 
-**Fix:** Igbo 1.0 sets `src_lang="eng_Latn"` and `tgt_lang="ibo_Latn"` on the tokenizer for training. It sets `forced_bos_token_id=tokenizer.convert_tokens_to_ids("ibo_Latn")` at evaluation and in `src/langbridge/inference.py`.
+**Fix:** Igbo 1.0 sets `src_lang="eng_Latn"` and `tgt_lang="ibo_Latn"` on the tokenizer for training. It sets `forced_bos_token_id=tokenizer.convert_tokens_to_ids("ibo_Latn")` at evaluation.
 
 **What I learned:** Check the first token of `input_ids` and `labels` in a real batch, every time. The v1 pipeline printed them (`256073…` for the source, `256047` = `eng_Latn` for labels), and that check is cheap.
 

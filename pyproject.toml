@@ -7,7 +7,7 @@ license = "Apache-2.0"
 requires-python = ">=3.13"
 dependencies = [
     "datasets>=5.0.0",
-    # CPU inference (src/langbridge/inference.py). No bitsandbytes needed.
+    # Inference on CPU: no bitsandbytes needed.
     "torch>=2.4",
     "transformers>=4.46",
     "peft>=0.13",

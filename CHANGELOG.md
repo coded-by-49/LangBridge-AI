@@ -5,7 +5,7 @@ Dates come from git commits, Hugging Face commits and notebook outputs. See [doc
 ## [Unreleased]: repository overhaul (2026-11-15)
 
 - Reorganised the repository: `src/`, `notebooks/`, `scripts/`, `configs/`, `results/`, `docs/`, `archive/`.
-- Added a CPU-only inference script, results CSVs and charts, a split-overlap check, and detailed documentation.
+- Added results CSVs and charts, a split-overlap check, and detailed documentation.
 - Found that 1,506 of 1,693 test pairs (88.95%) also appear in the training split. Documented in [docs/evaluation.md](docs/evaluation.md).
 - Removed a hard-coded Hugging Face token from a notebook. Secrets, virtual environments, IDE files, weights and local data are git-ignored.
 
