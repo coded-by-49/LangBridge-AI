@@ -7,23 +7,23 @@
 model:
   base_model: facebook/nllb-200-distilled-1.3B
   adapter_repo: coded-by-49/LANGBRIDGE_AI_IGBO_1.0
-  tie_word_embeddings: false        # set on the model config before loading
+  tie_word_embeddings: false        
   source_lang: eng_Latn
   target_lang: ibo_Latn
-  max_length: 256                   # source and target truncated to 256 tokens
+  max_length: 256                   
   truncation_side: right
 
-quantization:                       # bitsandbytes 4-bit loading (QLoRA)
+quantization:                       
   load_in_4bit: true
   bnb_4bit_quant_type: nf4
   bnb_4bit_use_double_quant: true
   bnb_4bit_compute_dtype: float32
 
 lora:
-  target_modules: all-linear        # resolves to q/k/v/out_proj, fc1, fc2 (adapter_config.json)
+  target_modules: all-linear        
   r: 32
   lora_alpha: 32
-  use_rslora: true                  # scaling = alpha / sqrt(r)
+  use_rslora: true                  
   lora_dropout: 0.05
   bias: lora_only
   task_type: SEQ_2_SEQ_LM
@@ -50,7 +50,7 @@ training:                           # Seq2SeqTrainingArguments
   load_best_model_at_end: true
   metric_for_best_model: eval_loss
   greater_is_better: false
-  early_stopping_patience: 12       # EarlyStoppingCallback; HF card says 7, project brief said 2
+  early_stopping_patience: 12       
   label_smoothing_factor: 0.1
   fp16: true
   bf16: false
